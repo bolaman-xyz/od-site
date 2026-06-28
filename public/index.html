@@ -4,48 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In | OD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #0c0e1a; color: #c4c4d4;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0a0a0f;
+            color: #a0a0b0;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
         }
         .bg {
             position: fixed; inset: 0;
-            background:
-                linear-gradient(rgba(12,14,26,0.95), rgba(12,14,26,0.95)),
-                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px),
-                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px);
             z-index: 0;
-        }
-        .glow {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(101,40,204,0.08) 0%, transparent 60%);
-            pointer-events: none; z-index: 0;
         }
 
         .card {
             position: relative; z-index: 1;
-            width: 100%; max-width: 400px;
-            background: rgba(15,17,30,0.9);
+            width: 100%; max-width: 420px;
+            background: rgba(12, 12, 18, 0.92);
             border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px;
-            padding: 44px 36px;
+            border-radius: 14px;
+            padding: 48px 40px;
             text-align: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            backdrop-filter: blur(16px);
         }
         .card h1 {
-            font-size: 24px; font-weight: 800; color: #fff;
+            font-size: 22px; font-weight: 700; color: #fff;
             margin-bottom: 8px;
         }
         .card p {
-            font-size: 13.5px; color: #4e4f63; margin-bottom: 32px;
+            font-size: 14px; color: #555568; margin-bottom: 32px;
             line-height: 1.5;
         }
         .discord-btn {
@@ -53,7 +46,7 @@
             width: 100%; padding: 14px;
             background: #5865F2;
             color: #fff; border: none; border-radius: 10px;
-            font-size: 14px; font-weight: 700; cursor: pointer;
+            font-size: 14px; font-weight: 600; cursor: pointer;
             font-family: inherit;
             transition: background 0.15s, transform 0.1s;
             text-decoration: none;
@@ -62,44 +55,13 @@
         .discord-btn:active { transform: translateY(0); }
         .discord-btn svg { width: 22px; height: 22px; fill: #fff; }
 
-        .divider {
-            display: flex; align-items: center; gap: 12px;
-            margin: 24px 0; color: #2a2b3d; font-size: 11px;
-            text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
-        }
-        .divider::before, .divider::after {
-            content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.04);
-        }
-
-        .email-form { display: flex; flex-direction: column; gap: 10px; }
-        .email-form input {
-            width: 100%; padding: 12px 16px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px; color: #d0d0de; font-size: 13px;
-            font-family: inherit; outline: none;
-            transition: border-color 0.15s;
-        }
-        .email-form input::placeholder { color: #33344a; }
-        .email-form input:focus { border-color: rgba(139,92,246,0.3); }
-        .email-btn {
-            width: 100%; padding: 12px;
-            background: rgba(139,92,246,0.12);
-            border: 1px solid rgba(139,92,246,0.2);
-            color: #a78bfa; border-radius: 8px;
-            font-size: 13px; font-weight: 600; cursor: pointer;
-            font-family: inherit; transition: all 0.15s;
-        }
-        .email-btn:hover { background: rgba(139,92,246,0.2); }
-
         .footer-text {
-            margin-top: 24px; font-size: 11px; color: #2a2b3d;
+            margin-top: 24px; font-size: 11px; color: #333345;
         }
     </style>
 </head>
 <body>
 <div class="bg"></div>
-<div class="glow"></div>
 
 <div class="card">
     <h1>Sign in</h1>
@@ -112,13 +74,5 @@
 
     <div class="footer-text">By signing in you agree to our Terms of Service</div>
 </div>
-
-<script>
-function emailLogin(e) {
-    e.preventDefault();
-    const email = document.getElementById('emailInput').value;
-    if (email) window.location.href = '/dashboard.html#email=' + encodeURIComponent(email);
-}
-</script>
 </body>
 </html>

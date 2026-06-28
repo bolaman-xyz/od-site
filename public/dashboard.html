@@ -4,25 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Products | OD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #0c0e1a; color: #c4c4d4;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0a0a0f;
+            color: #a0a0b0;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             background-image:
-                linear-gradient(rgba(12,14,26,0.97), rgba(12,14,26,0.97)),
-                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px),
-                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px);
         }
 
         /* Sidebar */
         .sidebar {
             width: 220px; flex-shrink: 0;
-            background: rgba(255,255,255,0.015);
-            border-right: 1px solid rgba(255,255,255,0.04);
+            background: rgba(10,10,15,0.85);
+            backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255,255,255,0.05);
             display: flex; flex-direction: column;
             padding: 20px 0;
             position: fixed; top: 0; left: 0; bottom: 0;
@@ -33,23 +34,23 @@
             padding: 0 20px; margin-bottom: 28px;
         }
         .logo-icon {
-            width: 30px; height: 30px;
+            width: 28px; height: 28px;
             background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            border-radius: 8px;
+            border-radius: 7px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800; color: #fff;
+            font-size: 10px; font-weight: 800; color: #fff;
         }
-        .logo-name { font-size: 16px; font-weight: 800; color: #fff; }
+        .logo-name { font-size: 15px; font-weight: 700; color: #fff; }
 
         .sidebar-section {
-            font-size: 10px; font-weight: 700; color: #33344a;
+            font-size: 10px; font-weight: 600; color: #333345;
             text-transform: uppercase; letter-spacing: 1.2px;
-            padding: 0 20px; margin-bottom: 8px; margin-top: 20px;
+            padding: 0 20px; margin-bottom: 6px; margin-top: 20px;
         }
         .sidebar-link {
             display: flex; align-items: center; gap: 10px;
             padding: 9px 20px;
-            font-size: 13px; font-weight: 500; color: #55566a;
+            font-size: 13px; font-weight: 500; color: #555568;
             text-decoration: none;
             transition: all 0.15s;
             border-left: 2px solid transparent;
@@ -57,7 +58,7 @@
         .sidebar-link:hover { color: #b0b0c8; background: rgba(255,255,255,0.02); }
         .sidebar-link.active {
             color: #e0e0ee;
-            background: rgba(139,92,246,0.06);
+            background: rgba(255,255,255,0.03);
             border-left-color: #7c3aed;
         }
         .sidebar-link svg { width: 16px; height: 16px; flex-shrink: 0; }
@@ -65,23 +66,23 @@
         .sidebar-bottom {
             margin-top: auto;
             padding: 16px 20px;
-            border-top: 1px solid rgba(255,255,255,0.04);
+            border-top: 1px solid rgba(255,255,255,0.05);
             display: flex; align-items: center; gap: 10px;
         }
         .user-avatar {
             width: 32px; height: 32px; border-radius: 50%;
-            background: rgba(139,92,246,0.15);
+            background: rgba(255,255,255,0.06);
             display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 700; color: #8b5cf6;
+            font-size: 13px; font-weight: 600; color: #888;
             overflow: hidden;
         }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .user-info { flex: 1; min-width: 0; }
         .user-name { font-size: 13px; font-weight: 600; color: #d0d0de; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-sub { font-size: 10px; color: #44455a; }
+        .user-sub { font-size: 10px; color: #444458; }
         .logout-btn {
             background: none; border: none; cursor: pointer;
-            color: #33344a; transition: color 0.15s; padding: 4px;
+            color: #333345; transition: color 0.15s; padding: 4px;
         }
         .logout-btn:hover { color: #dc5656; }
         .logout-btn svg { width: 16px; height: 16px; }
@@ -89,26 +90,25 @@
         /* Main */
         .main {
             flex: 1; margin-left: 220px;
-            padding: 0;
         }
         .main-header {
             display: flex; align-items: center; justify-content: space-between;
             padding: 24px 32px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .main-header h1 {
-            font-size: 22px; font-weight: 800; color: #fff;
+            font-size: 20px; font-weight: 700; color: #fff;
         }
         .email-btn {
             display: flex; align-items: center; gap: 8px;
             padding: 9px 18px;
-            background: rgba(139,92,246,0.1);
-            border: 1px solid rgba(139,92,246,0.2);
-            border-radius: 8px; color: #a78bfa;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; color: #b0b0c8;
             font-size: 12px; font-weight: 600; cursor: pointer;
             font-family: inherit; transition: all 0.15s;
         }
-        .email-btn:hover { background: rgba(139,92,246,0.18); }
+        .email-btn:hover { border-color: rgba(255,255,255,0.2); color: #e0e0ee; }
         .email-btn svg { width: 14px; height: 14px; }
 
         .main-content {
@@ -118,19 +118,21 @@
         /* Empty state */
         .empty-state {
             display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 80px 20px;
+            justify-content: center; padding: 100px 20px;
             text-align: center;
         }
         .empty-icon {
-            width: 56px; height: 56px;
+            width: 52px; height: 52px;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; margin-bottom: 16px;
+            margin-bottom: 16px;
+            color: #444458;
         }
-        .empty-state h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-        .empty-state p { font-size: 13px; color: #44455a; margin-bottom: 20px; }
+        .empty-icon svg { width: 24px; height: 24px; }
+        .empty-state h2 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+        .empty-state p { font-size: 13px; color: #555568; margin-bottom: 22px; max-width: 300px; }
         .empty-btn {
             display: flex; align-items: center; gap: 8px;
             padding: 10px 22px;
@@ -140,7 +142,7 @@
             font-size: 13px; font-weight: 600; cursor: pointer;
             font-family: inherit; transition: all 0.15s;
         }
-        .empty-btn:hover { border-color: rgba(139,92,246,0.2); color: #d0d0de; }
+        .empty-btn:hover { border-color: rgba(255,255,255,0.15); color: #e0e0ee; }
         .empty-btn svg { width: 16px; height: 16px; }
 
         /* Product cards */
@@ -156,15 +158,15 @@
             padding: 20px;
             transition: border-color 0.2s;
         }
-        .product-card:hover { border-color: rgba(139,92,246,0.18); }
+        .product-card:hover { border-color: rgba(255,255,255,0.1); }
         .product-top {
             display: flex; align-items: flex-start; justify-content: space-between;
             margin-bottom: 14px;
         }
         .product-icon {
-            width: 42px; height: 42px;
-            background: rgba(139,92,246,0.08);
-            border: 1px solid rgba(139,92,246,0.12);
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             font-size: 18px; overflow: hidden;
@@ -172,7 +174,7 @@
         .product-icon img { width: 100%; height: 100%; object-fit: cover; }
         .product-status {
             display: flex; align-items: center; gap: 5px;
-            font-size: 10.5px; font-weight: 700;
+            font-size: 10.5px; font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
         .product-status .dot { width: 6px; height: 6px; border-radius: 50%; }
@@ -181,8 +183,8 @@
         .ps-yellow { color: #fbbf24; }
         .ps-yellow .dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.4); }
 
-        .product-name { font-size: 15px; font-weight: 700; color: #eeeef4; margin-bottom: 3px; }
-        .product-desc { font-size: 12px; color: #44455a; margin-bottom: 14px; line-height: 1.5; }
+        .product-name { font-size: 14px; font-weight: 600; color: #eeeef4; margin-bottom: 3px; }
+        .product-desc { font-size: 12px; color: #444458; margin-bottom: 14px; line-height: 1.5; }
 
         .product-meta {
             display: flex; gap: 14px; margin-bottom: 16px;
@@ -199,9 +201,9 @@
         .ptag {
             padding: 3px 8px; border-radius: 5px;
             font-size: 10px; font-weight: 600;
-            background: rgba(139,92,246,0.07);
-            border: 1px solid rgba(139,92,246,0.1);
-            color: #8b7ec8;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #777790;
         }
         .dl-btn {
             display: flex; align-items: center; gap: 6px;
@@ -224,12 +226,12 @@
         .modal-overlay.show { display: flex; }
         .modal {
             width: 100%; max-width: 420px;
-            background: #12142a;
+            background: #111118;
             border: 1px solid rgba(255,255,255,0.06);
             border-radius: 14px; padding: 28px;
         }
         .modal h2 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-        .modal p { font-size: 12.5px; color: #44455a; margin-bottom: 18px; }
+        .modal p { font-size: 12.5px; color: #555568; margin-bottom: 18px; }
         .modal input {
             width: 100%; padding: 11px 14px;
             background: rgba(255,255,255,0.03);
@@ -238,21 +240,21 @@
             font-family: inherit; outline: none;
             margin-bottom: 14px;
         }
-        .modal input:focus { border-color: rgba(139,92,246,0.3); }
+        .modal input:focus { border-color: rgba(255,255,255,0.15); }
         .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
         .modal-btn {
             padding: 9px 18px; border-radius: 8px;
             font-size: 12px; font-weight: 600; cursor: pointer;
             font-family: inherit; border: none; transition: all 0.15s;
         }
-        .btn-cancel { background: rgba(255,255,255,0.04); color: #55566a; }
+        .btn-cancel { background: rgba(255,255,255,0.04); color: #555568; }
         .btn-cancel:hover { color: #8888a0; }
         .btn-go { background: #7c3aed; color: #fff; }
         .btn-go:hover { background: #6d28d9; }
 
         .loading-spinner {
             display: flex; align-items: center; justify-content: center;
-            padding: 60px; color: #44455a; font-size: 13px;
+            padding: 60px; color: #444458; font-size: 13px;
         }
 
         @media (max-width: 768px) {
@@ -334,18 +336,20 @@ let token = '';
 let user = null;
 
 const DL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
+const KEY_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15.5 7.5 2.3-2.3a1 1 0 0 1 1.4 0l1.1 1.1a1 1 0 0 1 0 1.4L18 10"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>';
+const BOX_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>';
 
 function renderProducts(products) {
     const el = document.getElementById('content');
     if (!products || products.length === 0) {
         el.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">📦</div>
+                <div class="empty-icon">${BOX_SVG}</div>
                 <h2>No products yet</h2>
-                <p>We couldn't find any purchases linked to your account. Try looking up with a different email.</p>
+                <p>Redeem a license key to gain access to the loader.</p>
                 <button class="empty-btn" onclick="openEmailModal()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
-                    Look up by Email
+                    ${KEY_SVG}
+                    Lookup by Email
                 </button>
             </div>`;
         return;
@@ -365,11 +369,11 @@ function renderProducts(products) {
 
         let imgHtml = img
             ? `<div class="product-icon"><img src="${img}" alt=""></div>`
-            : `<div class="product-icon">📦</div>`;
+            : `<div class="product-icon">${BOX_SVG}</div>`;
 
         let btnHtml;
         if (st.includes('updat')) {
-            btnHtml = `<button class="dl-btn" style="background:rgba(255,255,255,0.04);color:#44455a;cursor:default;">Updating...</button>`;
+            btnHtml = `<button class="dl-btn" style="background:rgba(255,255,255,0.04);color:#444458;cursor:default;">Updating...</button>`;
         } else if (dlLink) {
             btnHtml = `<a href="${dlLink}" target="_blank" class="dl-btn">${DL_SVG} Download</a>`;
         } else {
@@ -450,7 +454,6 @@ function signOut() {
     window.location.href = '/';
 }
 
-// Init
 (async () => {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
@@ -460,23 +463,18 @@ function signOut() {
         localStorage.setItem('od_token', token);
         history.replaceState(null, '', '/dashboard.html');
     } else if (params.has('email')) {
-        // Email-only login: create a temp session via lookup
         const email = params.get('email');
         history.replaceState(null, '', '/dashboard.html');
-        // We need a session token first - use a guest approach
         token = 'email_' + btoa(email);
         localStorage.setItem('od_token', token);
         updateUser({ email, global_name: email.split('@')[0] });
-        // For email-only users, go straight to lookup
         document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up your products...</div>';
-        // Need a real token - create via admin-less path
         try {
             const res = await fetch('/api/lookup', {
                 method: 'POST',
                 headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             });
-            // If 401, we need to handle differently
             if (res.status === 401) {
                 renderProducts([]);
             } else {
@@ -491,7 +489,6 @@ function signOut() {
 
     if (!token) { window.location.href = '/'; return; }
 
-    // Get user info
     try {
         const res = await fetch('/api/me', { headers: { 'Authorization': 'Bearer ' + token }});
         if (res.ok) {
@@ -499,7 +496,6 @@ function signOut() {
             updateUser(data);
             await loadProducts();
         } else {
-            // Token invalid
             localStorage.removeItem('od_token');
             window.location.href = '/';
         }
