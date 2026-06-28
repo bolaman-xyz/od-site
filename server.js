@@ -288,16 +288,27 @@ if (DISCORD_BOT_TOKEN) {
         new SlashCommandBuilder()
             .setName('setlink')
             .setDescription('Set a download link for a product')
-            .addStringOption(o => o.setName('product').setDescription('Product name or ID').setRequired(true))
+            .addStringOption(o => o.setName('product').setDescription('Select a product').setRequired(true).setAutocomplete(true))
             .addStringOption(o => o.setName('url').setDescription('Download URL').setRequired(true)),
         new SlashCommandBuilder()
             .setName('setstatus')
             .setDescription('Set product status text')
-            .addStringOption(o => o.setName('product').setDescription('Product name or ID').setRequired(true))
-            .addStringOption(o => o.setName('status').setDescription('Status text (e.g. Available, Updating, Offline)').setRequired(true)),
+            .addStringOption(o => o.setName('product').setDescription('Select a product').setRequired(true).setAutocomplete(true))
+            .addStringOption(o => o.setName('status').setDescription('Status text').setRequired(true)
+                .addChoices(
+                    { name: 'Available', value: 'Available' },
+                    { name: 'Updating', value: 'Updating' },
+                    { name: 'Offline', value: 'Offline' },
+                    { name: 'Maintenance', value: 'Maintenance' }
+                )),
         new SlashCommandBuilder()
             .setName('products')
             .setDescription('List all products and their download links'),
+        new SlashCommandBuilder()
+            .setName('updatelink')
+            .setDescription('Update an existing download link for a product')
+            .addStringOption(o => o.setName('product').setDescription('Select a product').setRequired(true).setAutocomplete(true))
+            .addStringOption(o => o.setName('url').setDescription('New download URL').setRequired(true)),
     ].map(c => c.toJSON());
 
     bot.once('ready', async () => {
@@ -331,11 +342,23 @@ if (DISCORD_BOT_TOKEN) {
     }
 
     bot.on('interactionCreate', async interaction => {
+        if (interaction.isAutocomplete()) {
+            const focused = interaction.options.getFocused();
+            const products = await fetchProducts();
+            if (!Array.isArray(products)) return interaction.respond([]);
+            const q = focused.toLowerCase();
+            const filtered = products
+                .filter(p => p.name?.toLowerCase().includes(q) || String(p.id).includes(q))
+                .slice(0, 25)
+                .map(p => ({ name: p.name || `Product #${p.id}`, value: String(p.id) }));
+            return interaction.respond(filtered);
+        }
+
         if (!interaction.isChatInputCommand()) return;
 
         const { commandName } = interaction;
 
-        if (commandName === 'setlink') {
+        if (commandName === 'setlink' || commandName === 'updatelink') {
             const query = interaction.options.getString('product');
             const url = interaction.options.getString('url');
             const product = await findProduct(query);
@@ -348,7 +371,7 @@ if (DISCORD_BOT_TOKEN) {
 
             const embed = new EmbedBuilder()
                 .setColor(0x7c3aed)
-                .setTitle('Download Link Updated')
+                .setTitle(commandName === 'updatelink' ? 'Download Link Updated' : 'Download Link Set')
                 .addFields(
                     { name: 'Product', value: product.name || String(product.id), inline: true },
                     { name: 'Link', value: url, inline: false }
