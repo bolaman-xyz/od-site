@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | OD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0c0e1a; color: #c4c4d4;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+        }
+        .bg-glow {
+            position: fixed; top: -300px; left: 50%; transform: translateX(-50%);
+            width: 1000px; height: 700px;
+            background: radial-gradient(ellipse, rgba(101,40,204,0.13) 0%, rgba(60,20,160,0.05) 45%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+
+        /* Login */
+        .login-wrap {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 20px;
+            position: relative; z-index: 1;
+        }
+        .login-box {
+            width: 100%; max-width: 360px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 36px 28px;
+        }
+        .login-box h1 {
+            font-size: 22px; font-weight: 800; color: #fff;
+            margin-bottom: 4px;
+        }
+        .login-box h1 span { color: #8b5cf6; }
+        .login-box p { font-size: 13px; color: #44455a; margin-bottom: 24px; }
+        .field { margin-bottom: 16px; }
+        .field label {
+            display: block; font-size: 11px; font-weight: 600;
+            color: #55566a; margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .field input, .field textarea, .field select {
+            width: 100%; padding: 10px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px; color: #d0d0de; font-size: 13px;
+            font-family: inherit; outline: none;
+            transition: border-color 0.15s;
+        }
+        .field input:focus, .field textarea:focus { border-color: rgba(139,92,246,0.3); }
+        .field textarea { resize: vertical; min-height: 80px; }
+        .btn {
+            width: 100%; padding: 10px;
+            background: #7c3aed; color: #fff;
+            border: none; border-radius: 8px;
+            font-size: 13px; font-weight: 700;
+            cursor: pointer; font-family: inherit;
+            transition: background 0.15s;
+        }
+        .btn:hover { background: #6d28d9; }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: #55566a;
+        }
+        .btn-outline:hover { border-color: rgba(255,255,255,0.12); color: #8888a0; }
+        .btn-sm { width: auto; padding: 7px 14px; font-size: 12px; }
+        .btn-danger { background: #dc2626; }
+        .btn-danger:hover { background: #b91c1c; }
+        .error-msg {
+            color: #dc5656; font-size: 12px;
+            margin-top: 8px; display: none;
+        }
+
+        /* Dashboard */
+        .dashboard { display: none; position: relative; z-index: 1; }
+        .dash-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 28px; height: 52px;
+            background: rgba(12,14,26,0.85);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            backdrop-filter: blur(16px);
+        }
+        .dash-nav-left { display: flex; align-items: center; gap: 16px; }
+        .logo-box {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            border-radius: 7px; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800; color: #fff;
+        }
+        .dash-title { font-size: 13px; font-weight: 600; color: #8b5cf6; }
+        .logout-btn {
+            font-size: 12px; font-weight: 500; color: #44455a;
+            background: none; border: none; cursor: pointer;
+            font-family: inherit; transition: color 0.15s;
+        }
+        .logout-btn:hover { color: #dc5656; }
+
+        .dash-tabs {
+            display: flex; gap: 4px; padding: 20px 28px 0;
+        }
+        .dash-tab {
+            padding: 9px 18px; border-radius: 8px 8px 0 0;
+            font-size: 12.5px; font-weight: 600;
+            background: transparent; border: 1px solid transparent;
+            border-bottom: none; color: #44455a;
+            cursor: pointer; font-family: inherit;
+            transition: all 0.15s;
+        }
+        .dash-tab:hover { color: #8888a0; }
+        .dash-tab.on {
+            background: rgba(255,255,255,0.02);
+            border-color: rgba(255,255,255,0.06);
+            color: #d0d0de;
+        }
+
+        .dash-content {
+            max-width: 900px; margin: 0 auto;
+            padding: 24px 28px 60px;
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Product list */
+        .prod-list { display: flex; flex-direction: column; gap: 8px; }
+        .prod-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 10px;
+            transition: border-color 0.15s;
+        }
+        .prod-item:hover { border-color: rgba(139,92,246,0.15); }
+        .prod-name { font-size: 14px; font-weight: 600; color: #dddde8; flex: 1; }
+        .prod-id { font-size: 11px; color: #33344a; }
+        .prod-actions { display: flex; gap: 6px; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            width: 100%; max-width: 480px;
+            background: #12142a;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 28px;
+        }
+        .modal h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 18px; }
+        .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+
+        /* Guide editor */
+        .guide-list { display: flex; flex-direction: column; gap: 8px; }
+        .guide-item {
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: border-color 0.15s;
+        }
+        .guide-item:hover { border-color: rgba(139,92,246,0.15); }
+        .guide-name { font-size: 14px; font-weight: 600; color: #dddde8; }
+        .guide-sub { font-size: 11px; color: #44455a; margin-top: 2px; }
+
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            padding: 10px 20px;
+            background: #22c55e; color: #fff;
+            border-radius: 8px; font-size: 12px; font-weight: 600;
+            z-index: 2000; opacity: 0; transform: translateY(10px);
+            transition: all 0.3s;
+        }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        .section-label {
+            font-size: 11px; font-weight: 700; color: #7c3aed;
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 12px; margin-top: 20px;
+        }
+        .hint { font-size: 11px; color: #33344a; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginView">
+    <div class="login-box">
+        <h1>Admin <span>Panel</span></h1>
+        <p>Enter your password to manage downloads & guides.</p>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" id="loginPass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()">
+        </div>
+        <button class="btn" onclick="login()">Sign In</button>
+        <div class="error-msg" id="loginErr">Invalid password.</div>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashView">
+    <div class="dash-nav">
+        <div class="dash-nav-left">
+            <div class="logo-box">OD</div>
+            <span class="dash-title">Admin Panel</span>
+        </div>
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+
+    <div class="dash-tabs">
+        <button class="dash-tab on" onclick="switchTab('products',this)">Products</button>
+        <button class="dash-tab" onclick="switchTab('guides',this)">Guides</button>
+    </div>
+
+    <div class="dash-content">
+
+        <!-- Products tab -->
+        <div class="tab-panel active" id="tab-products">
+            <div class="section-label">Your SellAuth Products</div>
+            <p class="hint" style="margin-bottom:14px;">Click Edit to override download links, status text, or badge text per product.</p>
+            <div class="prod-list" id="prodList">
+                <div style="color:#44455a;font-size:13px;padding:20px 0;">Loading products...</div>
+            </div>
+        </div>
+
+        <!-- Guides tab -->
+        <div class="tab-panel" id="tab-guides">
+            <div class="section-label">Guide Pages</div>
+            <p class="hint" style="margin-bottom:14px;">Edit the download/setup instructions shown on the Guides page for each product.</p>
+            <div class="guide-list" id="guideList"></div>
+            <button class="btn btn-sm" style="margin-top:14px;" onclick="openGuideModal()">+ Add Guide</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <h2 id="modalTitle">Edit Product</h2>
+        <input type="hidden" id="editId">
+        <div class="field">
+            <label>Download Link</label>
+            <input type="text" id="editLink" placeholder="https://mega.nz/... or direct link">
+            <div class="hint">Overrides the default SellAuth product link</div>
+        </div>
+        <div class="field">
+            <label>Status Text</label>
+            <input type="text" id="editStatus" placeholder="e.g. Undetected, Updating, Offline">
+        </div>
+        <div class="field">
+            <label>Badge Text</label>
+            <input type="text" id="editBadge" placeholder="e.g. NEW, Popular">
+        </div>
+        <div class="field">
+            <label>Custom Name Override</label>
+            <input type="text" id="editName" placeholder="Leave blank to use SellAuth name">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-sm btn-outline" onclick="closeModal('productModal')">Cancel</button>
+            <button class="btn btn-sm btn-danger" onclick="resetProduct()">Reset</button>
+            <button class="btn btn-sm" onclick="saveProduct()">Save</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Guide Modal -->
+<div class="modal-overlay" id="guideModal">
+    <div class="modal">
+        <h2 id="guideModalTitle">Edit Guide</h2>
+        <input type="hidden" id="guideSlug">
+        <div class="field">
+            <label>Guide Title</label>
+            <input type="text" id="guideTitle" placeholder="e.g. Black Ops 6 Loader">
+        </div>
+        <div class="field">
+            <label>Product / Game</label>
+            <input type="text" id="guideGame" placeholder="e.g. Call of Duty: Black Ops 6">
+        </div>
+        <div class="field">
+            <label>Status</label>
+            <select id="guideStatus">
+                <option value="Undetected">Undetected</option>
+                <option value="Updating">Updating</option>
+                <option value="Offline">Offline</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Version</label>
+            <input type="text" id="guideVersion" placeholder="e.g. v3.2.1">
+        </div>
+        <div class="field">
+            <label>Setup Steps (one per line)</label>
+            <textarea id="guideSteps" placeholder="Disable Windows Defender&#10;Download & Extract the loader&#10;Run as Administrator&#10;Enter your license key&#10;Launch the game&#10;Press INSERT to open menu"></textarea>
+        </div>
+        <div class="field">
+            <label>Troubleshooting (question | answer, one per line)</label>
+            <textarea id="guideFaq" placeholder="Loader closes immediately | Make sure Defender is off&#10;Invalid key error | Check for typos, keys are case-sensitive"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-sm btn-outline" onclick="closeModal('guideModal')">Cancel</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteGuide()">Delete</button>
+            <button class="btn btn-sm" onclick="saveGuide()">Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let token = localStorage.getItem('admin_token') || '';
+let products = [];
+let config = {};
+
+// Auth
+async function login() {
+    const pass = document.getElementById('loginPass').value;
+    const res = await fetch('/api/admin/login', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ password: pass })
+    });
+    if (!res.ok) {
+        document.getElementById('loginErr').style.display = 'block';
+        return;
+    }
+    const d = await res.json();
+    token = d.token;
+    localStorage.setItem('admin_token', token);
+    showDashboard();
+}
+
+function logout() {
+    fetch('/api/admin/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }});
+    token = '';
+    localStorage.removeItem('admin_token');
+    document.getElementById('dashView').style.display = 'none';
+    document.getElementById('loginView').style.display = 'flex';
+}
+
+async function showDashboard() {
+    document.getElementById('loginView').style.display = 'none';
+    document.getElementById('dashView').style.display = 'block';
+    await loadAdminData();
+}
+
+async function loadAdminData() {
+    try {
+        const [prodRes, confRes] = await Promise.all([
+            fetch('/api/products'),
+            fetch('/api/admin/config', { headers: { 'Authorization': 'Bearer ' + token }})
+        ]);
+        if (confRes.status === 401) { logout(); return; }
+        const prodData = await prodRes.json();
+        products = prodData.data || [];
+        config = await confRes.json();
+        renderProducts();
+        renderGuides();
+    } catch(e) { console.error(e); }
+}
+
+// Products
+function renderProducts() {
+    const list = document.getElementById('prodList');
+    if (!products.length) { list.innerHTML = '<div style="color:#44455a;font-size:13px;">No products found from SellAuth.</div>'; return; }
+    list.innerHTML = products.map(p => {
+        const override = config.products?.[String(p._id || p.id)] || {};
+        const hasOverride = Object.keys(override).length > 0;
+        return `<div class="prod-item">
+            <div style="flex:1">
+                <div class="prod-name">${p.name || 'Untitled'}${hasOverride ? ' <span style="color:#8b5cf6;font-size:10px;">MODIFIED</span>' : ''}</div>
+                <div class="prod-id">ID: ${p._id || p.id}${override.download_link ? ' · Link: ' + override.download_link.substring(0,40) + '...' : ''}</div>
+            </div>
+            <div class="prod-actions">
+                <button class="btn btn-sm btn-outline" onclick="editProduct('${p._id || p.id}','${(p.name||'').replace(/'/g,"\\'")}')">Edit</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function editProduct(id, name) {
+    const override = config.products?.[String(id)] || {};
+    document.getElementById('editId').value = id;
+    document.getElementById('modalTitle').textContent = 'Edit: ' + name;
+    document.getElementById('editLink').value = override.download_link || '';
+    document.getElementById('editStatus').value = override.status_text || '';
+    document.getElementById('editBadge').value = override.badge_text || '';
+    document.getElementById('editName').value = override.name || '';
+    document.getElementById('productModal').classList.add('show');
+}
+
+async function saveProduct() {
+    const id = document.getElementById('editId').value;
+    const body = {};
+    const link = document.getElementById('editLink').value.trim();
+    const status = document.getElementById('editStatus').value.trim();
+    const badge = document.getElementById('editBadge').value.trim();
+    const name = document.getElementById('editName').value.trim();
+    if (link) body.download_link = link;
+    if (status) body.status_text = status;
+    if (badge) body.badge_text = badge;
+    if (name) body.name = name;
+
+    await fetch('/api/admin/product/' + id, {
+        method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    closeModal('productModal');
+    toast('Product updated');
+    await loadAdminData();
+}
+
+async function resetProduct() {
+    const id = document.getElementById('editId').value;
+    await fetch('/api/admin/product/' + id, {
+        method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }
+    });
+    closeModal('productModal');
+    toast('Product reset to defaults');
+    await loadAdminData();
+}
+
+// Guides
+function renderGuides() {
+    const list = document.getElementById('guideList');
+    const guides = config.guides || {};
+    const keys = Object.keys(guides);
+    if (!keys.length) { list.innerHTML = '<div style="color:#44455a;font-size:13px;">No custom guides yet. Click "+ Add Guide" to create one.</div>'; return; }
+    list.innerHTML = keys.map(slug => {
+        const g = guides[slug];
+        return `<div class="guide-item">
+            <div>
+                <div class="guide-name">${g.title || slug}</div>
+                <div class="guide-sub">${g.game || ''} · ${g.status || 'Undetected'} · ${g.version || ''}</div>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="editGuide('${slug}')">Edit</button>
+        </div>`;
+    }).join('');
+}
+
+function openGuideModal() {
+    document.getElementById('guideModalTitle').textContent = 'New Guide';
+    document.getElementById('guideSlug').value = '';
+    document.getElementById('guideTitle').value = '';
+    document.getElementById('guideGame').value = '';
+    document.getElementById('guideStatus').value = 'Undetected';
+    document.getElementById('guideVersion').value = '';
+    document.getElementById('guideSteps').value = '';
+    document.getElementById('guideFaq').value = '';
+    document.getElementById('guideModal').classList.add('show');
+}
+
+function editGuide(slug) {
+    const g = config.guides?.[slug] || {};
+    document.getElementById('guideModalTitle').textContent = 'Edit: ' + (g.title || slug);
+    document.getElementById('guideSlug').value = slug;
+    document.getElementById('guideTitle').value = g.title || '';
+    document.getElementById('guideGame').value = g.game || '';
+    document.getElementById('guideStatus').value = g.status || 'Undetected';
+    document.getElementById('guideVersion').value = g.version || '';
+    document.getElementById('guideSteps').value = (g.steps || []).join('\n');
+    document.getElementById('guideFaq').value = (g.faq || []).map(f => f.q + ' | ' + f.a).join('\n');
+    document.getElementById('guideModal').classList.add('show');
+}
+
+async function saveGuide() {
+    let slug = document.getElementById('guideSlug').value.trim();
+    const title = document.getElementById('guideTitle').value.trim();
+    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/,'');
+    if (!slug) return;
+
+    const steps = document.getElementById('guideSteps').value.split('\n').map(s => s.trim()).filter(Boolean);
+    const faqLines = document.getElementById('guideFaq').value.split('\n').filter(l => l.includes('|'));
+    const faq = faqLines.map(l => { const [q, ...a] = l.split('|'); return { q: q.trim(), a: a.join('|').trim() }; });
+
+    const body = {
+        title,
+        game: document.getElementById('guideGame').value.trim(),
+        status: document.getElementById('guideStatus').value,
+        version: document.getElementById('guideVersion').value.trim(),
+        steps, faq
+    };
+
+    await fetch('/api/admin/guide/' + slug, {
+        method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    closeModal('guideModal');
+    toast('Guide saved');
+    await loadAdminData();
+}
+
+async function deleteGuide() {
+    const slug = document.getElementById('guideSlug').value;
+    if (!slug) { closeModal('guideModal'); return; }
+    const data = loadData ? config : {};
+    if (data.guides) delete data.guides[slug];
+    await fetch('/api/admin/guide/' + slug, {
+        method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(null)
+    });
+    closeModal('guideModal');
+    toast('Guide deleted');
+    await loadAdminData();
+}
+
+// Helpers
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function switchTab(name, el) {
+    document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    el.classList.add('on');
+    document.getElementById('tab-' + name).classList.add('active');
+}
+function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+(async () => {
+    if (token) {
+        const res = await fetch('/api/admin/config', { headers: { 'Authorization': 'Bearer ' + token }});
+        if (res.ok) { showDashboard(); return; }
+        localStorage.removeItem('admin_token');
+        token = '';
+    }
+})();
+</script>
+</body>
+</html>

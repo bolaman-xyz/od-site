@@ -330,10 +330,11 @@ function makeCard(p) {
     }
 
     let statusHtml = '';
-    if (statusText) {
+    const st = statusText.toLowerCase();
+    if (st.includes('updat') || st.includes('offline') || stock === 0) {
+        statusHtml = `<div class="status s-up"><span class="dot"></span>${statusText || 'Out of Stock'}</div>`;
+    } else if (statusText) {
         statusHtml = `<div class="status s-ud"><span class="dot"></span>${statusText}</div>`;
-    } else if (stock === 0) {
-        statusHtml = `<div class="status s-up"><span class="dot"></span>Out of Stock</div>`;
     } else {
         statusHtml = `<div class="status s-ud"><span class="dot"></span>Available</div>`;
     }
@@ -348,9 +349,15 @@ function makeCard(p) {
         });
     }
 
+    const dlLink = p.download_link || '';
+
     let btnHtml = '';
     if (stock === 0) {
         btnHtml = `<button class="dl-btn off">Out of Stock</button>`;
+    } else if (statusText && statusText.toLowerCase().includes('updat')) {
+        btnHtml = `<button class="dl-btn off">Updating...</button>`;
+    } else if (dlLink) {
+        btnHtml = `<a href="${dlLink}" target="_blank" class="dl-btn" style="text-decoration:none;">${DL_ICON}Download</a>`;
     } else if (slug) {
         btnHtml = `<a href="https://sellauth.com/p/${slug}" target="_blank" class="dl-btn" style="text-decoration:none;">${DL_ICON}Get Product</a>`;
     } else {
