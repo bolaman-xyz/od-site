@@ -291,154 +291,119 @@
 <div class="filter-row">
     <div class="search">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-        <input type="text" placeholder="Search downloads..." id="q" oninput="filter()">
+        <input type="text" placeholder="Search downloads..." id="q" oninput="filterCards()">
     </div>
-    <button class="pill on" onclick="cat(this,'all')">All</button>
-    <button class="pill" onclick="cat(this,'cod')">Call of Duty</button>
-    <button class="pill" onclick="cat(this,'spoofer')">Spoofers</button>
-    <button class="pill" onclick="cat(this,'other')">Other</button>
 </div>
 
 <div class="grid-wrap">
-    <div class="grid">
-
-        <div class="card" data-c="cod" data-n="black ops 6 loader">
-            <div class="card-top">
-                <div class="card-icon">🎯</div>
-                <div class="status s-ud"><span class="dot"></span>Undetected</div>
-            </div>
-            <div class="card-name">Black Ops 6 Loader</div>
-            <div class="card-game">Call of Duty: Black Ops 6</div>
-            <div class="card-meta">
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>24.8 MB</span>
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Jun 27</span>
-            </div>
-            <div class="tags">
-                <span class="tag">Aimbot</span><span class="tag">ESP</span><span class="tag">Wallhack</span><span class="tag">No Recoil</span>
-            </div>
-            <div class="card-bottom">
-                <span class="ver">v3.2.1</span>
-                <button class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Download</button>
-            </div>
-        </div>
-
-        <div class="card" data-c="cod" data-n="mw3 loader">
-            <div class="card-top">
-                <div class="card-icon">💀</div>
-                <div class="status s-ud"><span class="dot"></span>Undetected</div>
-            </div>
-            <div class="card-name">MW3 Loader</div>
-            <div class="card-game">Call of Duty: Modern Warfare 3</div>
-            <div class="card-meta">
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>18.3 MB</span>
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Jun 26</span>
-            </div>
-            <div class="tags">
-                <span class="tag">Aimbot</span><span class="tag">ESP</span><span class="tag">Radar</span>
-            </div>
-            <div class="card-bottom">
-                <span class="ver">v2.8.4</span>
-                <button class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Download</button>
-            </div>
-        </div>
-
-        <div class="card" data-c="spoofer" data-n="hwid spoofer">
-            <div class="card-top">
-                <div class="card-icon">🛡️</div>
-                <div class="status s-ud"><span class="dot"></span>Undetected</div>
-            </div>
-            <div class="card-name">HWID Spoofer</div>
-            <div class="card-game">Universal — All Games</div>
-            <div class="card-meta">
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>12.1 MB</span>
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Jun 28</span>
-            </div>
-            <div class="tags">
-                <span class="tag">Disk</span><span class="tag">MAC</span><span class="tag">Serial</span>
-            </div>
-            <div class="card-bottom">
-                <span class="ver">v5.0.2</span>
-                <button class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Download</button>
-            </div>
-        </div>
-
-        <div class="card" data-c="cod" data-n="mw2 loader">
-            <div class="card-top">
-                <div class="card-icon">⚔️</div>
-                <div class="status s-up"><span class="dot"></span>Updating</div>
-            </div>
-            <div class="card-name">MW2 Loader</div>
-            <div class="card-game">Call of Duty: Modern Warfare 2</div>
-            <div class="card-meta">
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>20.5 MB</span>
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Jun 25</span>
-            </div>
-            <div class="tags">
-                <span class="tag">Aimbot</span><span class="tag">ESP</span><span class="tag">Unlock All</span>
-            </div>
-            <div class="card-bottom">
-                <span class="ver">v2.4.0</span>
-                <button class="dl-btn off">Updating...</button>
-            </div>
-        </div>
-
-        <div class="card" data-c="other" data-n="arc raiders loader">
-            <div class="card-top">
-                <div class="card-icon">🚀</div>
-                <div class="status s-ud"><span class="dot"></span>Undetected</div>
-            </div>
-            <div class="card-name">Arc Raiders Loader</div>
-            <div class="card-game">Arc Raiders</div>
-            <div class="card-meta">
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>15.7 MB</span>
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Jun 27</span>
-            </div>
-            <div class="tags">
-                <span class="tag">Aimbot</span><span class="tag">ESP</span><span class="tag">Speed</span>
-            </div>
-            <div class="card-bottom">
-                <span class="ver">v1.3.0</span>
-                <button class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Download</button>
-            </div>
-        </div>
-
-        <div class="card" data-c="other" data-n="rainbow six loader">
-            <div class="card-top">
-                <div class="card-icon">🌈</div>
-                <div class="status s-ud"><span class="dot"></span>Undetected</div>
-            </div>
-            <div class="card-name">Rainbow Six Loader</div>
-            <div class="card-game">Rainbow Six Siege</div>
-            <div class="card-meta">
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>22.0 MB</span>
-                <span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Jun 26</span>
-            </div>
-            <div class="tags">
-                <span class="tag">Aimbot</span><span class="tag">ESP</span><span class="tag">No Recoil</span>
-            </div>
-            <div class="card-bottom">
-                <span class="ver">v4.1.2</span>
-                <button class="dl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Download</button>
-            </div>
-        </div>
-
+    <div class="grid" id="grid">
+        <div class="loading" style="grid-column:1/-1;text-align:center;padding:40px 0;color:#44455a;font-size:13px;">Loading products...</div>
     </div>
 </div>
 
 <script>
-function cat(el, c) {
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-    el.classList.add('on');
-    document.querySelectorAll('.card').forEach(d => {
-        d.style.display = (c === 'all' || d.dataset.c === c) ? '' : 'none';
-    });
+const DL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
+
+function makeCard(p) {
+    const name = p.name || 'Untitled';
+    const desc = p.description || '';
+    const price = p.price != null ? `$${(p.price / 100).toFixed(2)}` : '';
+    const stock = p.stock != null ? p.stock : null;
+    const slug = p.path || '';
+    const img = p.image_url || p.cloudflare_image_id || '';
+    const statusText = p.status_text || '';
+    const badgeText = p.badge_text || '';
+    const variants = p.variants || [];
+    const updated = p.updated_at ? new Date(p.updated_at).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : '';
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.n = name.toLowerCase();
+
+    let imgHtml = '';
+    if (img) {
+        imgHtml = `<div class="card-img" style="width:40px;height:40px;border-radius:10px;overflow:hidden;border:1px solid rgba(139,92,246,0.12);flex-shrink:0;">
+            <img src="${img}" style="width:100%;height:100%;object-fit:cover;" alt="">
+        </div>`;
+    } else {
+        imgHtml = `<div class="card-icon">📦</div>`;
+    }
+
+    let statusHtml = '';
+    if (statusText) {
+        statusHtml = `<div class="status s-ud"><span class="dot"></span>${statusText}</div>`;
+    } else if (stock === 0) {
+        statusHtml = `<div class="status s-up"><span class="dot"></span>Out of Stock</div>`;
+    } else {
+        statusHtml = `<div class="status s-ud"><span class="dot"></span>Available</div>`;
+    }
+
+    let tagsHtml = '';
+    if (badgeText) {
+        tagsHtml += `<span class="tag">${badgeText}</span>`;
+    }
+    if (variants.length > 0) {
+        variants.forEach(v => {
+            tagsHtml += `<span class="tag">${v.name || v.title || ''}</span>`;
+        });
+    }
+
+    let btnHtml = '';
+    if (stock === 0) {
+        btnHtml = `<button class="dl-btn off">Out of Stock</button>`;
+    } else if (slug) {
+        btnHtml = `<a href="https://sellauth.com/p/${slug}" target="_blank" class="dl-btn" style="text-decoration:none;">${DL_ICON}Get Product</a>`;
+    } else {
+        btnHtml = `<button class="dl-btn">${DL_ICON}Get Product</button>`;
+    }
+
+    card.innerHTML = `
+        <div class="card-top">
+            ${imgHtml}
+            ${statusHtml}
+        </div>
+        <div class="card-name">${name}</div>
+        <div class="card-game">${desc ? desc.replace(/<[^>]*>/g,'').substring(0,80) : ''}</div>
+        <div class="card-meta">
+            ${price ? `<span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>${price}</span>` : ''}
+            ${updated ? `<span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${updated}</span>` : ''}
+            ${stock != null && stock > 0 ? `<span class="meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16"/></svg>${stock} in stock</span>` : ''}
+        </div>
+        ${tagsHtml ? `<div class="tags">${tagsHtml}</div>` : ''}
+        <div class="card-bottom">
+            <span class="ver">${price || ''}</span>
+            ${btnHtml}
+        </div>
+    `;
+    return card;
 }
-function filter() {
+
+async function loadProducts() {
+    const grid = document.getElementById('grid');
+    try {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        const products = data.data || data.products || data || [];
+        grid.innerHTML = '';
+        if (Array.isArray(products) && products.length > 0) {
+            products.forEach(p => grid.appendChild(makeCard(p)));
+        } else {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#44455a;font-size:13px;">No products found.</div>';
+        }
+    } catch (e) {
+        console.error(e);
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#dc5656;font-size:13px;">Failed to load products.</div>';
+    }
+}
+
+function filterCards() {
     const q = document.getElementById('q').value.toLowerCase();
     document.querySelectorAll('.card').forEach(d => {
         d.style.display = d.dataset.n.includes(q) ? '' : 'none';
     });
 }
+
+loadProducts();
 </script>
 </body>
 </html>
