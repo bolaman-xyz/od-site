@@ -276,3 +276,138 @@ app.get('/api/guides', (req, res) => { res.json(loadData().guides || {}); });
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));
+
+// ── Discord Bot ──
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+if (DISCORD_BOT_TOKEN) {
+    const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+
+    const bot = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+    const commands = [
+        new SlashCommandBuilder()
+            .setName('setlink')
+            .setDescription('Set a download link for a product')
+            .addStringOption(o => o.setName('product').setDescription('Product name or ID').setRequired(true))
+            .addStringOption(o => o.setName('url').setDescription('Download URL').setRequired(true)),
+        new SlashCommandBuilder()
+            .setName('setstatus')
+            .setDescription('Set product status text')
+            .addStringOption(o => o.setName('product').setDescription('Product name or ID').setRequired(true))
+            .addStringOption(o => o.setName('status').setDescription('Status text (e.g. Available, Updating, Offline)').setRequired(true)),
+        new SlashCommandBuilder()
+            .setName('products')
+            .setDescription('List all products and their download links'),
+    ].map(c => c.toJSON());
+
+    bot.once('ready', async () => {
+        console.log(`Bot logged in as ${bot.user.tag}`);
+        const rest = new REST({ version: '10' }).setToken(DISCORD_BOT_TOKEN);
+        try {
+            await rest.put(Routes.applicationCommands(bot.user.id), { body: commands });
+            console.log('Slash commands registered');
+        } catch (err) {
+            console.error('Failed to register commands:', err);
+        }
+    });
+
+    async function fetchProducts() {
+        try {
+            const res = await fetch(`https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/products?page=1&perPage=100`, {
+                headers: { 'Authorization': `Bearer ${SELLAUTH_API_KEY}`, 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            return data.data || data.products || data || [];
+        } catch { return []; }
+    }
+
+    async function findProduct(query) {
+        const products = await fetchProducts();
+        if (!Array.isArray(products)) return null;
+        const q = query.toLowerCase();
+        return products.find(p => String(p.id) === query) ||
+               products.find(p => p.name?.toLowerCase() === q) ||
+               products.find(p => p.name?.toLowerCase().includes(q));
+    }
+
+    bot.on('interactionCreate', async interaction => {
+        if (!interaction.isChatInputCommand()) return;
+
+        const { commandName } = interaction;
+
+        if (commandName === 'setlink') {
+            const query = interaction.options.getString('product');
+            const url = interaction.options.getString('url');
+            const product = await findProduct(query);
+            if (!product) return interaction.reply({ content: `Product "${query}" not found.`, ephemeral: true });
+
+            const data = loadData();
+            if (!data.products) data.products = {};
+            data.products[String(product.id)] = { ...data.products[String(product.id)], download_link: url };
+            saveData(data);
+
+            const embed = new EmbedBuilder()
+                .setColor(0x7c3aed)
+                .setTitle('Download Link Updated')
+                .addFields(
+                    { name: 'Product', value: product.name || String(product.id), inline: true },
+                    { name: 'Link', value: url, inline: false }
+                )
+                .setTimestamp();
+            return interaction.reply({ embeds: [embed] });
+        }
+
+        if (commandName === 'setstatus') {
+            const query = interaction.options.getString('product');
+            const status = interaction.options.getString('status');
+            const product = await findProduct(query);
+            if (!product) return interaction.reply({ content: `Product "${query}" not found.`, ephemeral: true });
+
+            const data = loadData();
+            if (!data.products) data.products = {};
+            data.products[String(product.id)] = { ...data.products[String(product.id)], status_text: status };
+            saveData(data);
+
+            const embed = new EmbedBuilder()
+                .setColor(0x7c3aed)
+                .setTitle('Status Updated')
+                .addFields(
+                    { name: 'Product', value: product.name || String(product.id), inline: true },
+                    { name: 'Status', value: status, inline: true }
+                )
+                .setTimestamp();
+            return interaction.reply({ embeds: [embed] });
+        }
+
+        if (commandName === 'products') {
+            const products = await fetchProducts();
+            const config = loadData();
+
+            if (!Array.isArray(products) || products.length === 0) {
+                return interaction.reply({ content: 'No products found.', ephemeral: true });
+            }
+
+            const embed = new EmbedBuilder()
+                .setColor(0x7c3aed)
+                .setTitle('All Products')
+                .setTimestamp();
+
+            for (const p of products.slice(0, 25)) {
+                const override = config.products?.[String(p.id)] || {};
+                const status = override.status_text || 'Available';
+                const link = override.download_link || 'Not set';
+                embed.addFields({
+                    name: p.name || `Product #${p.id}`,
+                    value: `Status: ${status}\nLink: ${link}`,
+                    inline: false
+                });
+            }
+
+            return interaction.reply({ embeds: [embed] });
+        }
+    });
+
+    bot.login(DISCORD_BOT_TOKEN).catch(err => console.error('Bot login failed:', err));
+} else {
+    console.log('No DISCORD_BOT_TOKEN set, bot disabled');
+}
