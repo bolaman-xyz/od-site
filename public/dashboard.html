@@ -257,6 +257,45 @@
             padding: 60px; color: #444458; font-size: 13px;
         }
 
+        /* Email prompt (shown after Discord login) */
+        .email-prompt {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 80px 20px;
+            text-align: center;
+        }
+        .email-prompt-icon {
+            width: 52px; height: 52px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px;
+            color: #444458;
+        }
+        .email-prompt-icon svg { width: 24px; height: 24px; }
+        .email-prompt h2 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+        .email-prompt p { font-size: 13px; color: #555568; margin-bottom: 22px; max-width: 340px; }
+        .email-prompt-form {
+            display: flex; gap: 8px; width: 100%; max-width: 400px;
+        }
+        .email-prompt-form input {
+            flex: 1; padding: 11px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px; color: #d0d0de; font-size: 13px;
+            font-family: inherit; outline: none;
+        }
+        .email-prompt-form input:focus { border-color: rgba(255,255,255,0.15); }
+        .email-prompt-form button {
+            padding: 11px 22px;
+            background: #7c3aed; color: #fff;
+            border: none; border-radius: 8px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: background 0.15s;
+            white-space: nowrap;
+        }
+        .email-prompt-form button:hover { background: #6d28d9; }
+
         @media (max-width: 768px) {
             .sidebar { width: 60px; padding: 16px 0; }
             .sidebar-logo { padding: 0; justify-content: center; }
@@ -338,6 +377,39 @@ let user = null;
 const DL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
 const KEY_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15.5 7.5 2.3-2.3a1 1 0 0 1 1.4 0l1.1 1.1a1 1 0 0 1 0 1.4L18 10"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>';
 const BOX_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>';
+
+const MAIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>';
+
+function showEmailPrompt() {
+    document.getElementById('content').innerHTML = `
+        <div class="email-prompt">
+            <div class="email-prompt-icon">${MAIL_SVG}</div>
+            <h2>Enter your email</h2>
+            <p>Enter the email you used when purchasing to view your downloads.</p>
+            <div class="email-prompt-form">
+                <input type="email" id="promptEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')submitEmail()">
+                <button onclick="submitEmail()">Look up</button>
+            </div>
+        </div>`;
+    setTimeout(() => { const el = document.getElementById('promptEmail'); if (el) el.focus(); }, 100);
+}
+
+async function submitEmail() {
+    const email = document.getElementById('promptEmail').value.trim();
+    if (!email) return;
+    document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up products...</div>';
+    try {
+        const res = await fetch('/api/lookup', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        renderProducts(data.products || []);
+    } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="loading-spinner">Lookup failed. Try again.</div>';
+    }
+}
 
 function renderProducts(products) {
     const el = document.getElementById('content');
@@ -494,13 +566,13 @@ function signOut() {
         if (res.ok) {
             const data = await res.json();
             updateUser(data);
-            await loadProducts();
+            showEmailPrompt();
         } else {
             localStorage.removeItem('od_token');
             window.location.href = '/';
         }
     } catch(e) {
-        renderProducts([]);
+        showEmailPrompt();
     }
 })();
 </script>
