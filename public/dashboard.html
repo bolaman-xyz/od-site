@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Products | OD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0c0e1a; color: #c4c4d4;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background-image:
+                linear-gradient(rgba(12,14,26,0.97), rgba(12,14,26,0.97)),
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px),
+                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px; flex-shrink: 0;
+            background: rgba(255,255,255,0.015);
+            border-right: 1px solid rgba(255,255,255,0.04);
+            display: flex; flex-direction: column;
+            padding: 20px 0;
+            position: fixed; top: 0; left: 0; bottom: 0;
+            z-index: 10;
+        }
+        .sidebar-logo {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0 20px; margin-bottom: 28px;
+        }
+        .logo-icon {
+            width: 30px; height: 30px;
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 800; color: #fff;
+        }
+        .logo-name { font-size: 16px; font-weight: 800; color: #fff; }
+
+        .sidebar-section {
+            font-size: 10px; font-weight: 700; color: #33344a;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            padding: 0 20px; margin-bottom: 8px; margin-top: 20px;
+        }
+        .sidebar-link {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 20px;
+            font-size: 13px; font-weight: 500; color: #55566a;
+            text-decoration: none;
+            transition: all 0.15s;
+            border-left: 2px solid transparent;
+        }
+        .sidebar-link:hover { color: #b0b0c8; background: rgba(255,255,255,0.02); }
+        .sidebar-link.active {
+            color: #e0e0ee;
+            background: rgba(139,92,246,0.06);
+            border-left-color: #7c3aed;
+        }
+        .sidebar-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(139,92,246,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: #8b5cf6;
+            overflow: hidden;
+        }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .user-info { flex: 1; min-width: 0; }
+        .user-name { font-size: 13px; font-weight: 600; color: #d0d0de; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-sub { font-size: 10px; color: #44455a; }
+        .logout-btn {
+            background: none; border: none; cursor: pointer;
+            color: #33344a; transition: color 0.15s; padding: 4px;
+        }
+        .logout-btn:hover { color: #dc5656; }
+        .logout-btn svg { width: 16px; height: 16px; }
+
+        /* Main */
+        .main {
+            flex: 1; margin-left: 220px;
+            padding: 0;
+        }
+        .main-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .main-header h1 {
+            font-size: 22px; font-weight: 800; color: #fff;
+        }
+        .email-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 9px 18px;
+            background: rgba(139,92,246,0.1);
+            border: 1px solid rgba(139,92,246,0.2);
+            border-radius: 8px; color: #a78bfa;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+        }
+        .email-btn:hover { background: rgba(139,92,246,0.18); }
+        .email-btn svg { width: 14px; height: 14px; }
+
+        .main-content {
+            padding: 28px 32px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 80px 20px;
+            text-align: center;
+        }
+        .empty-icon {
+            width: 56px; height: 56px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; margin-bottom: 16px;
+        }
+        .empty-state h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .empty-state p { font-size: 13px; color: #44455a; margin-bottom: 20px; }
+        .empty-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 22px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; color: #b0b0c8;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: all 0.15s;
+        }
+        .empty-btn:hover { border-color: rgba(139,92,246,0.2); color: #d0d0de; }
+        .empty-btn svg { width: 16px; height: 16px; }
+
+        /* Product cards */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 14px;
+        }
+        .product-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.2s;
+        }
+        .product-card:hover { border-color: rgba(139,92,246,0.18); }
+        .product-top {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .product-icon {
+            width: 42px; height: 42px;
+            background: rgba(139,92,246,0.08);
+            border: 1px solid rgba(139,92,246,0.12);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; overflow: hidden;
+        }
+        .product-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .product-status {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 10.5px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .product-status .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .ps-green { color: #34d399; }
+        .ps-green .dot { background: #34d399; box-shadow: 0 0 6px rgba(52,211,153,0.4); }
+        .ps-yellow { color: #fbbf24; }
+        .ps-yellow .dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+
+        .product-name { font-size: 15px; font-weight: 700; color: #eeeef4; margin-bottom: 3px; }
+        .product-desc { font-size: 12px; color: #44455a; margin-bottom: 14px; line-height: 1.5; }
+
+        .product-meta {
+            display: flex; gap: 14px; margin-bottom: 16px;
+        }
+        .pm { font-size: 11px; color: #3e3f55; display: flex; align-items: center; gap: 4px; }
+        .pm svg { width: 12px; height: 12px; }
+
+        .product-bottom {
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .product-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+        .ptag {
+            padding: 3px 8px; border-radius: 5px;
+            font-size: 10px; font-weight: 600;
+            background: rgba(139,92,246,0.07);
+            border: 1px solid rgba(139,92,246,0.1);
+            color: #8b7ec8;
+        }
+        .dl-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 18px;
+            background: #7c3aed; color: #fff;
+            border: none; border-radius: 7px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            font-family: inherit; text-decoration: none;
+            transition: background 0.15s, transform 0.1s;
+        }
+        .dl-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+        .dl-btn svg { width: 14px; height: 14px; }
+
+        /* Email modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 100; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            width: 100%; max-width: 420px;
+            background: #12142a;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 28px;
+        }
+        .modal h2 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .modal p { font-size: 12.5px; color: #44455a; margin-bottom: 18px; }
+        .modal input {
+            width: 100%; padding: 11px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px; color: #d0d0de; font-size: 13px;
+            font-family: inherit; outline: none;
+            margin-bottom: 14px;
+        }
+        .modal input:focus { border-color: rgba(139,92,246,0.3); }
+        .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+        .modal-btn {
+            padding: 9px 18px; border-radius: 8px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            font-family: inherit; border: none; transition: all 0.15s;
+        }
+        .btn-cancel { background: rgba(255,255,255,0.04); color: #55566a; }
+        .btn-cancel:hover { color: #8888a0; }
+        .btn-go { background: #7c3aed; color: #fff; }
+        .btn-go:hover { background: #6d28d9; }
+
+        .loading-spinner {
+            display: flex; align-items: center; justify-content: center;
+            padding: 60px; color: #44455a; font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; padding: 16px 0; }
+            .sidebar-logo { padding: 0; justify-content: center; }
+            .logo-name, .sidebar-section, .sidebar-link span, .user-info { display: none; }
+            .sidebar-link { justify-content: center; padding: 12px; border-left: none; }
+            .sidebar-bottom { padding: 12px; justify-content: center; }
+            .main { margin-left: 60px; }
+            .main-header { padding: 20px; }
+            .main-content { padding: 20px; }
+            .product-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-icon">OD</div>
+        <span class="logo-name">OD</span>
+    </div>
+
+    <div class="sidebar-section">License</div>
+    <a href="#" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+        <span>My Products</span>
+    </a>
+
+    <div class="sidebar-section">Community</div>
+    <a href="#" class="sidebar-link" id="discordLink">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+        <span>Discord Server</span>
+    </a>
+
+    <div class="sidebar-bottom" id="userSection">
+        <div class="user-avatar" id="userAvatar">?</div>
+        <div class="user-info">
+            <div class="user-name" id="userName">Guest</div>
+            <div class="user-sub" id="userSub">Not signed in</div>
+        </div>
+        <button class="logout-btn" onclick="signOut()" title="Sign out">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+    </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+    <div class="main-header">
+        <h1>My Products</h1>
+        <button class="email-btn" onclick="openEmailModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+            Lookup by Email
+        </button>
+    </div>
+
+    <div class="main-content" id="content">
+        <div class="loading-spinner">Loading your products...</div>
+    </div>
+</div>
+
+<!-- Email Modal -->
+<div class="modal-overlay" id="emailModal">
+    <div class="modal">
+        <h2>Find your products</h2>
+        <p>Enter the email you used when purchasing to find your downloads.</p>
+        <input type="email" id="lookupEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLookup()">
+        <div class="modal-btns">
+            <button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-btn btn-go" onclick="doLookup()">Look up</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let token = '';
+let user = null;
+
+const DL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
+
+function renderProducts(products) {
+    const el = document.getElementById('content');
+    if (!products || products.length === 0) {
+        el.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <h2>No products yet</h2>
+                <p>We couldn't find any purchases linked to your account. Try looking up with a different email.</p>
+                <button class="empty-btn" onclick="openEmailModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                    Look up by Email
+                </button>
+            </div>`;
+        return;
+    }
+
+    el.innerHTML = '<div class="product-grid">' + products.map(p => {
+        const name = p.name || 'Untitled';
+        const desc = p.description ? p.description.replace(/<[^>]*>/g, '').substring(0, 100) : '';
+        const img = p.image_url || p.cloudflare_image_id || '';
+        const statusText = p.status_text || 'Available';
+        const st = statusText.toLowerCase();
+        const statusClass = (st.includes('updat') || st.includes('offline')) ? 'ps-yellow' : 'ps-green';
+        const dlLink = p.download_link || '';
+        const variants = p.variants || [];
+        const badgeText = p.badge_text || '';
+        const purchased = p.purchased_at ? new Date(p.purchased_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '';
+
+        let imgHtml = img
+            ? `<div class="product-icon"><img src="${img}" alt=""></div>`
+            : `<div class="product-icon">📦</div>`;
+
+        let btnHtml;
+        if (st.includes('updat')) {
+            btnHtml = `<button class="dl-btn" style="background:rgba(255,255,255,0.04);color:#44455a;cursor:default;">Updating...</button>`;
+        } else if (dlLink) {
+            btnHtml = `<a href="${dlLink}" target="_blank" class="dl-btn">${DL_SVG} Download</a>`;
+        } else {
+            btnHtml = `<button class="dl-btn">${DL_SVG} Download</button>`;
+        }
+
+        let tagsHtml = '';
+        if (badgeText) tagsHtml += `<span class="ptag">${badgeText}</span>`;
+        variants.forEach(v => { if (v.name) tagsHtml += `<span class="ptag">${v.name}</span>`; });
+
+        return `
+            <div class="product-card">
+                <div class="product-top">
+                    ${imgHtml}
+                    <div class="product-status ${statusClass}"><span class="dot"></span>${statusText}</div>
+                </div>
+                <div class="product-name">${name}</div>
+                <div class="product-desc">${desc}</div>
+                <div class="product-meta">
+                    ${purchased ? `<span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${purchased}</span>` : ''}
+                </div>
+                <div class="product-bottom">
+                    <div class="product-tags">${tagsHtml}</div>
+                    ${btnHtml}
+                </div>
+            </div>`;
+    }).join('') + '</div>';
+}
+
+function updateUser(data) {
+    user = data;
+    document.getElementById('userName').textContent = data.global_name || data.username || data.email || 'Guest';
+    document.getElementById('userSub').textContent = data.email ? 'Authenticated' : 'Email lookup';
+    if (data.avatar) {
+        document.getElementById('userAvatar').innerHTML = `<img src="${data.avatar}" alt="">`;
+    } else {
+        document.getElementById('userAvatar').textContent = (data.global_name || data.username || '?')[0].toUpperCase();
+    }
+}
+
+async function loadProducts() {
+    try {
+        const res = await fetch('/api/my-products', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.status === 401) { signOut(); return; }
+        const data = await res.json();
+        renderProducts(data.products || []);
+    } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="loading-spinner">Failed to load products.</div>';
+    }
+}
+
+async function doLookup() {
+    const email = document.getElementById('lookupEmail').value.trim();
+    if (!email) return;
+    closeModal();
+    document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up products...</div>';
+
+    try {
+        const res = await fetch('/api/lookup', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        renderProducts(data.products || []);
+    } catch (e) {
+        document.getElementById('content').innerHTML = '<div class="loading-spinner">Lookup failed. Try again.</div>';
+    }
+}
+
+function openEmailModal() { document.getElementById('emailModal').classList.add('show'); document.getElementById('lookupEmail').focus(); }
+function closeModal() { document.getElementById('emailModal').classList.remove('show'); }
+
+function signOut() {
+    localStorage.removeItem('od_token');
+    window.location.href = '/';
+}
+
+// Init
+(async () => {
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+
+    if (params.has('token')) {
+        token = params.get('token');
+        localStorage.setItem('od_token', token);
+        history.replaceState(null, '', '/dashboard.html');
+    } else if (params.has('email')) {
+        // Email-only login: create a temp session via lookup
+        const email = params.get('email');
+        history.replaceState(null, '', '/dashboard.html');
+        // We need a session token first - use a guest approach
+        token = 'email_' + btoa(email);
+        localStorage.setItem('od_token', token);
+        updateUser({ email, global_name: email.split('@')[0] });
+        // For email-only users, go straight to lookup
+        document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up your products...</div>';
+        // Need a real token - create via admin-less path
+        try {
+            const res = await fetch('/api/lookup', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            // If 401, we need to handle differently
+            if (res.status === 401) {
+                renderProducts([]);
+            } else {
+                const data = await res.json();
+                renderProducts(data.products || []);
+            }
+        } catch(e) { renderProducts([]); }
+        return;
+    } else {
+        token = localStorage.getItem('od_token') || '';
+    }
+
+    if (!token) { window.location.href = '/'; return; }
+
+    // Get user info
+    try {
+        const res = await fetch('/api/me', { headers: { 'Authorization': 'Bearer ' + token }});
+        if (res.ok) {
+            const data = await res.json();
+            updateUser(data);
+            await loadProducts();
+        } else {
+            // Token invalid
+            localStorage.removeItem('od_token');
+            window.location.href = '/';
+        }
+    } catch(e) {
+        renderProducts([]);
+    }
+})();
+</script>
+</body>
+</html>
