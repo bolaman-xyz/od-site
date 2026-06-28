@@ -11,11 +11,15 @@
             background: #0c0e1a; color: #c4c4d4;
             font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
+            background-image:
+                linear-gradient(rgba(12,14,26,0.97), rgba(12,14,26,0.97)),
+                repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px),
+                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.015) 40px, rgba(255,255,255,0.015) 41px);
         }
         .bg-glow {
             position: fixed; top: -300px; left: 50%; transform: translateX(-50%);
             width: 1000px; height: 700px;
-            background: radial-gradient(ellipse, rgba(101,40,204,0.13) 0%, rgba(60,20,160,0.05) 45%, transparent 70%);
+            background: radial-gradient(ellipse, rgba(101,40,204,0.1) 0%, rgba(60,20,160,0.04) 45%, transparent 70%);
             pointer-events: none; z-index: 0;
         }
 
