@@ -166,10 +166,20 @@ app.post('/api/lookup', authMiddleware, async (req, res) => {
         const invoiceData = await invoiceRes.json();
         const invoices = invoiceData.data || invoiceData || [];
 
-        const userInvoices = Array.isArray(invoices) ? invoices.filter(inv =>
-            inv.customer_email?.toLowerCase() === email.toLowerCase() ||
-            inv.email?.toLowerCase() === email.toLowerCase()
-        ) : [];
+        console.log('Lookup email:', email);
+        console.log('Total invoices from API:', Array.isArray(invoices) ? invoices.length : 'not array');
+        if (Array.isArray(invoices) && invoices.length > 0) {
+            console.log('First invoice keys:', Object.keys(invoices[0]));
+            console.log('First invoice sample:', JSON.stringify(invoices[0]).substring(0, 500));
+        }
+
+        const emailLower = email.toLowerCase();
+        const userInvoices = Array.isArray(invoices) ? invoices.filter(inv => {
+            const ce = inv.customer_email || inv.email || inv.customer?.email || '';
+            return ce.toLowerCase() === emailLower;
+        }) : [];
+
+        console.log('Matched invoices:', userInvoices.length);
 
         const prodRes = await fetch(`https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/products?page=1&perPage=100`, {
             headers: { 'Authorization': `Bearer ${SELLAUTH_API_KEY}`, 'Content-Type': 'application/json' }
@@ -193,6 +203,7 @@ app.post('/api/lookup', authMiddleware, async (req, res) => {
             }
         }
 
+        console.log('Products found:', purchasedProducts.length);
         res.json({ products: purchasedProducts, total_invoices: userInvoices.length });
     } catch (err) {
         console.error('Lookup error:', err);
