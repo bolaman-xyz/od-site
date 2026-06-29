@@ -20,6 +20,10 @@ const DATA_FILE = path.join(DATA_DIR, 'config.json');
 function loadData() { try { return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')); } catch { return { products: {}, guides: {} }; } }
 function saveData(data) { fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2)); }
 
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
+function loadUsers() { try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); } catch { return {}; } }
+function saveUsers(users) { fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2)); }
+
 const sessions = new Map();
 
 function authMiddleware(req, res, next) {
@@ -65,13 +69,16 @@ app.get('/auth/discord/callback', async (req, res) => {
         const user = await userRes.json();
 
         const sessionToken = crypto.randomBytes(32).toString('hex');
+        const savedUsers = loadUsers();
+        const savedEmail = savedUsers[user.id] || null;
         sessions.set(sessionToken, {
             type: 'user',
             discord_id: user.id,
             username: user.username,
             global_name: user.global_name || user.username,
             avatar: user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png` : null,
-            email: user.email,
+            email: savedEmail || user.email,
+            saved_email: savedEmail,
             created: Date.now()
         });
 
@@ -158,10 +165,18 @@ app.post('/api/lookup', authMiddleware, async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email required' });
 
-    // Update session email
+    // Update session email and save mapping
     const token = req.headers['authorization']?.replace('Bearer ', '');
     const session = sessions.get(token);
-    if (session) session.email = email;
+    if (session) {
+        session.email = email;
+        session.saved_email = email;
+        if (session.discord_id) {
+            const users = loadUsers();
+            users[session.discord_id] = email;
+            saveUsers(users);
+        }
+    }
 
     // Re-fetch with new email
     try {
