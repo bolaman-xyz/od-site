@@ -294,7 +294,21 @@ app.put('/api/admin/guide/:slug', authMiddleware, (req, res) => {
     res.json({ ok: true });
 });
 
-app.get('/api/guides', (req, res) => { res.json(loadData().guides || {}); });
+app.delete('/api/admin/guide/:slug', authMiddleware, (req, res) => {
+    if (req.session.type !== 'admin') return res.status(403).json({ error: 'Not admin' });
+    const data = loadData();
+    if (data.guides) delete data.guides[req.params.slug];
+    saveData(data);
+    res.json({ ok: true });
+});
+
+app.get('/api/guides', (req, res) => {
+    const guides = loadData().guides || {};
+    // strip any null/empty entries left over from old deletes
+    const clean = {};
+    for (const [k, v] of Object.entries(guides)) { if (v && typeof v === 'object') clean[k] = v; }
+    res.json(clean);
+});
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));

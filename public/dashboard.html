@@ -539,22 +539,19 @@ function showGuideLinks(products) {
     const matchedGuides = [];
 
     for (const p of products) {
+        const pid = String(p._id || p.id);
         const pName = (p.name || '').toLowerCase();
+        let found = null;
         for (const key of guideKeys) {
             const guide = guidesData[key];
+            if (!guide) continue;
             const gName = (guide.title || key).toLowerCase();
-            if (pName.includes(gName) || gName.includes(pName) || key.toLowerCase().includes(pName.replace(/\s+/g, '-'))) {
-                if (!matchedGuides.find(m => m.key === key)) {
-                    matchedGuides.push({ key, title: guide.title || key });
-                }
-            }
+            const idMatch = guide.productId && String(guide.productId) === pid;
+            const nameMatch = pName && (pName.includes(gName) || gName.includes(pName) || key.toLowerCase().includes(pName.replace(/\s+/g, '-')));
+            if (idMatch || nameMatch) { found = { key, title: guide.title || key }; break; }
         }
-    }
-
-    if (matchedGuides.length === 0 && products.length > 0) {
-        for (const p of products) {
-            matchedGuides.push({ key: '__product_' + (p._id || p.id), title: (p.name || 'Product') + ' Guide', productName: p.name });
-        }
+        if (!found) found = { key: '__product_' + pid, title: (p.name || 'Product') + ' Guide', productName: p.name };
+        if (!matchedGuides.find(m => m.key === found.key)) matchedGuides.push(found);
     }
 
     if (matchedGuides.length === 0) { docsSection.style.display = 'none'; return; }

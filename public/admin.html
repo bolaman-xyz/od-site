@@ -193,6 +193,31 @@
             margin-bottom: 12px; margin-top: 20px;
         }
         .hint { font-size: 11px; color: #33344a; margin-top: 4px; }
+
+        /* Step builder */
+        .step-block {
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px; padding: 14px 16px 4px;
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.015);
+        }
+        .step-block-head {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .step-block-head .sb-num {
+            font-size: 11px; font-weight: 700; color: #8b5cf6;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .sb-remove {
+            background: none; border: none; color: #55566a;
+            cursor: pointer; font-size: 15px; line-height: 1;
+            padding: 2px 6px; border-radius: 5px; transition: all 0.15s;
+        }
+        .sb-remove:hover { color: #dc5656; background: rgba(220,38,38,0.08); }
+        .step-block .field { margin-bottom: 12px; }
+        .field-row { display: flex; gap: 10px; }
+        .field-row .field { flex: 1; }
     </style>
 </head>
 <body>
@@ -282,37 +307,30 @@
 
 <!-- Edit Guide Modal -->
 <div class="modal-overlay" id="guideModal">
-    <div class="modal">
+    <div class="modal" style="max-width:660px;max-height:88vh;overflow-y:auto;">
         <h2 id="guideModalTitle">Edit Guide</h2>
         <input type="hidden" id="guideSlug">
         <div class="field">
             <label>Guide Title</label>
-            <input type="text" id="guideTitle" placeholder="e.g. Black Ops 6 Loader">
+            <input type="text" id="guideTitle" placeholder="e.g. Fortnite Ext Guide">
         </div>
         <div class="field">
-            <label>Product / Game</label>
-            <input type="text" id="guideGame" placeholder="e.g. Call of Duty: Black Ops 6">
+            <label>Subtitle</label>
+            <input type="text" id="guideSubtitle" placeholder="Complete setup — follow every step before your first launch.">
         </div>
         <div class="field">
-            <label>Status</label>
-            <select id="guideStatus">
-                <option value="Undetected">Undetected</option>
-                <option value="Updating">Updating</option>
-                <option value="Offline">Offline</option>
-            </select>
+            <label>Show For Product</label>
+            <select id="guideProduct"><option value="">— Match by name —</option></select>
+            <div class="hint">Pick which purchased product this guide appears under.</div>
         </div>
-        <div class="field">
-            <label>Version</label>
-            <input type="text" id="guideVersion" placeholder="e.g. v3.2.1">
+
+        <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;">
+            <span>Steps</span>
+            <button class="btn btn-sm btn-outline" type="button" onclick="loadAsxTemplate()" style="font-size:11px;padding:5px 10px;">⚡ ASX Template</button>
         </div>
-        <div class="field">
-            <label>Setup Steps (one per line)</label>
-            <textarea id="guideSteps" placeholder="Disable Windows Defender&#10;Download & Extract the loader&#10;Run as Administrator&#10;Enter your license key&#10;Launch the game&#10;Press INSERT to open menu"></textarea>
-        </div>
-        <div class="field">
-            <label>Troubleshooting (question | answer, one per line)</label>
-            <textarea id="guideFaq" placeholder="Loader closes immediately | Make sure Defender is off&#10;Invalid key error | Check for typos, keys are case-sensitive"></textarea>
-        </div>
+        <div id="stepsContainer"></div>
+        <button class="btn btn-sm btn-outline" type="button" onclick="addStep()" style="margin-top:8px;">+ Add Step</button>
+
         <div class="modal-actions">
             <button class="btn btn-sm btn-outline" onclick="closeModal('guideModal')">Cancel</button>
             <button class="btn btn-sm btn-danger" onclick="deleteGuide()">Delete</button>
@@ -439,29 +457,89 @@ async function resetProduct() {
 function renderGuides() {
     const list = document.getElementById('guideList');
     const guides = config.guides || {};
-    const keys = Object.keys(guides);
+    const keys = Object.keys(guides).filter(k => guides[k] && typeof guides[k] === 'object');
     if (!keys.length) { list.innerHTML = '<div style="color:#44455a;font-size:13px;">No custom guides yet. Click "+ Add Guide" to create one.</div>'; return; }
     list.innerHTML = keys.map(slug => {
         const g = guides[slug];
+        const stepCount = (g.steps || []).length;
+        const prod = g.productName ? g.productName : (g.productId ? 'Product ' + g.productId : 'Match by name');
         return `<div class="guide-item">
             <div>
                 <div class="guide-name">${g.title || slug}</div>
-                <div class="guide-sub">${g.game || ''} · ${g.status || 'Undetected'} · ${g.version || ''}</div>
+                <div class="guide-sub">${prod} · ${stepCount} step${stepCount === 1 ? '' : 's'}</div>
             </div>
             <button class="btn btn-sm btn-outline" onclick="editGuide('${slug}')">Edit</button>
         </div>`;
     }).join('');
 }
 
+function fillProductDropdown(selectedId) {
+    const sel = document.getElementById('guideProduct');
+    sel.innerHTML = '<option value="">— Match by name —</option>' +
+        products.map(p => {
+            const id = p._id || p.id;
+            return `<option value="${id}">${(p.name || 'Untitled').replace(/</g,'&lt;')}</option>`;
+        }).join('');
+    sel.value = selectedId || '';
+}
+
+// ---- Step builder ----
+function stepBlockHtml(s) {
+    s = s || {};
+    const items = (s.items || []).map(it => it.replace(/<strong>(.*?)<\/strong>/g, '**$1**')).join('\n');
+    return `<div class="step-block">
+        <div class="step-block-head">
+            <span class="sb-num">Step</span>
+            <button type="button" class="sb-remove" onclick="this.closest('.step-block').remove();renumberSteps()">✕</button>
+        </div>
+        <div class="field-row">
+            <div class="field"><label>Tab Name</label><input class="sb-tab" value="${esc(s.tab)}" placeholder="Requirements"></div>
+            <div class="field"><label>Step Title</label><input class="sb-title" value="${esc(s.title)}" placeholder="System Requirements"></div>
+        </div>
+        <div class="field"><label>Description</label><textarea class="sb-desc" style="min-height:50px;" placeholder="Short intro line for this step">${esc(s.description)}</textarea></div>
+        <div class="field"><label>Bullet Points (one per line · wrap text in **bold**)</label><textarea class="sb-items" style="min-height:90px;" placeholder="**Windows 10 or 11** (64-bit)&#10;**Administrator account** — run as Admin">${esc(items)}</textarea></div>
+        <div class="field"><label>Info Box (optional)</label><input class="sb-info" value="${esc(s.info)}" placeholder="Product: ASX External · Executable: loader.exe"></div>
+        <div class="field-row">
+            <div class="field"><label>Button Text (optional)</label><input class="sb-linktext" value="${esc(s.link?.text)}" placeholder="Download WinRAR"></div>
+            <div class="field"><label>Button URL (optional)</label><input class="sb-linkurl" value="${esc(s.link?.url)}" placeholder="https://..."></div>
+        </div>
+    </div>`;
+}
+function esc(v) { return (v == null ? '' : String(v)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+function addStep(s) {
+    const c = document.getElementById('stepsContainer');
+    c.insertAdjacentHTML('beforeend', stepBlockHtml(s));
+    renumberSteps();
+}
+function renumberSteps() {
+    document.querySelectorAll('#stepsContainer .step-block .sb-num').forEach((el, i) => el.textContent = 'Step ' + (i + 1));
+}
+function readSteps() {
+    return [...document.querySelectorAll('#stepsContainer .step-block')].map(b => {
+        const tab = b.querySelector('.sb-tab').value.trim();
+        const title = b.querySelector('.sb-title').value.trim();
+        const description = b.querySelector('.sb-desc').value.trim();
+        const items = b.querySelector('.sb-items').value.split('\n').map(x => x.trim()).filter(Boolean)
+            .map(x => x.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'));
+        const info = b.querySelector('.sb-info').value.trim();
+        const linkText = b.querySelector('.sb-linktext').value.trim();
+        const linkUrl = b.querySelector('.sb-linkurl').value.trim();
+        const step = { tab, title, description, items };
+        if (info) step.info = info;
+        if (linkText || linkUrl) step.link = { text: linkText || 'Download', url: linkUrl || '#' };
+        return step;
+    }).filter(s => s.tab || s.title || s.items.length);
+}
+
 function openGuideModal() {
     document.getElementById('guideModalTitle').textContent = 'New Guide';
     document.getElementById('guideSlug').value = '';
     document.getElementById('guideTitle').value = '';
-    document.getElementById('guideGame').value = '';
-    document.getElementById('guideStatus').value = 'Undetected';
-    document.getElementById('guideVersion').value = '';
-    document.getElementById('guideSteps').value = '';
-    document.getElementById('guideFaq').value = '';
+    document.getElementById('guideSubtitle').value = '';
+    fillProductDropdown('');
+    document.getElementById('stepsContainer').innerHTML = '';
+    addStep();
     document.getElementById('guideModal').classList.add('show');
 }
 
@@ -470,30 +548,31 @@ function editGuide(slug) {
     document.getElementById('guideModalTitle').textContent = 'Edit: ' + (g.title || slug);
     document.getElementById('guideSlug').value = slug;
     document.getElementById('guideTitle').value = g.title || '';
-    document.getElementById('guideGame').value = g.game || '';
-    document.getElementById('guideStatus').value = g.status || 'Undetected';
-    document.getElementById('guideVersion').value = g.version || '';
-    document.getElementById('guideSteps').value = (g.steps || []).join('\n');
-    document.getElementById('guideFaq').value = (g.faq || []).map(f => f.q + ' | ' + f.a).join('\n');
+    document.getElementById('guideSubtitle').value = g.subtitle || '';
+    fillProductDropdown(g.productId || '');
+    const c = document.getElementById('stepsContainer');
+    c.innerHTML = '';
+    (g.steps && g.steps.length ? g.steps : [{}]).forEach(s => addStep(s));
     document.getElementById('guideModal').classList.add('show');
 }
 
 async function saveGuide() {
     let slug = document.getElementById('guideSlug').value.trim();
     const title = document.getElementById('guideTitle').value.trim();
-    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/,'');
+    if (!title) { toast('Add a guide title'); return; }
+    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
     if (!slug) return;
 
-    const steps = document.getElementById('guideSteps').value.split('\n').map(s => s.trim()).filter(Boolean);
-    const faqLines = document.getElementById('guideFaq').value.split('\n').filter(l => l.includes('|'));
-    const faq = faqLines.map(l => { const [q, ...a] = l.split('|'); return { q: q.trim(), a: a.join('|').trim() }; });
+    const sel = document.getElementById('guideProduct');
+    const productId = sel.value;
+    const productName = productId ? (sel.options[sel.selectedIndex]?.text || '') : '';
 
     const body = {
         title,
-        game: document.getElementById('guideGame').value.trim(),
-        status: document.getElementById('guideStatus').value,
-        version: document.getElementById('guideVersion').value.trim(),
-        steps, faq
+        subtitle: document.getElementById('guideSubtitle').value.trim(),
+        productId: productId || null,
+        productName: productName || null,
+        steps: readSteps()
     };
 
     await fetch('/api/admin/guide/' + slug, {
@@ -508,16 +587,92 @@ async function saveGuide() {
 async function deleteGuide() {
     const slug = document.getElementById('guideSlug').value;
     if (!slug) { closeModal('guideModal'); return; }
-    const data = loadData ? config : {};
-    if (data.guides) delete data.guides[slug];
     await fetch('/api/admin/guide/' + slug, {
-        method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify(null)
+        method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }
     });
     closeModal('guideModal');
     toast('Guide deleted');
     await loadAdminData();
 }
+
+function loadAsxTemplate() {
+    if (!document.getElementById('guideTitle').value.trim()) document.getElementById('guideTitle').value = 'Fortnite Ext Guide';
+    if (!document.getElementById('guideSubtitle').value.trim()) document.getElementById('guideSubtitle').value = 'Complete setup for ASX External — follow every step before your first launch.';
+    document.getElementById('stepsContainer').innerHTML = '';
+    ASX_TEMPLATE.forEach(s => addStep(s));
+    toast('Template loaded — edit then Save');
+}
+
+const ASX_TEMPLATE = [
+    {
+        tab: 'Requirements', title: 'System Requirements',
+        description: 'Make sure everything below is ready before installing. Skipping steps is the #1 reason the driver, overlay, or features fail.',
+        items: [
+            '**Windows 10 or 11** (64-bit)',
+            '**Administrator account** — loader must run as Admin',
+            '**Discord desktop app** installed, running, and logged in',
+            '**Fortnite** with Discord in-game overlay enabled',
+            '**Visual C++ Redistributable 2015–2022 (x64)**',
+            '**WinRAR** — required to extract downloaded files',
+            '**Stable internet** for license authentication'
+        ],
+        info: 'Product: ASX External · Executable: loader.exe · Config: %ProgramData%\\ASX External\\config.ini',
+        link: { text: 'Download WinRAR', url: 'https://www.win-rar.com/download.html' }
+    },
+    {
+        tab: 'VC++ Redist', title: 'Install Visual C++ Redistributable',
+        description: 'The loader needs the 2015–2022 x64 runtime. Install it and reboot before continuing.',
+        items: [
+            'Download the **x64** version from the official Microsoft link',
+            'Run the installer and accept the prompts',
+            'If it says already installed, choose **Repair**',
+            '**Restart your PC** after it finishes'
+        ],
+        link: { text: 'Download VC++ Redist (x64)', url: 'https://aka.ms/vs/17/release/vc_redist.x64.exe' }
+    },
+    {
+        tab: 'Disable Antivirus', title: 'Disable Antivirus / Defender',
+        description: 'Antivirus will flag and delete the loader. Add an exclusion or turn real-time protection off before extracting.',
+        items: [
+            'Open **Windows Security → Virus & threat protection**',
+            'Turn off **Real-time protection**',
+            'Add an **exclusion** for the folder you extract the loader to',
+            'Disable any third-party AV (Avast, McAfee, etc.) too'
+        ],
+        info: 'If the loader vanishes after download, your AV deleted it — restore it from quarantine and add the exclusion.'
+    },
+    {
+        tab: 'Driver Blocklist', title: 'Disable Vulnerable Driver Blocklist',
+        description: 'Windows blocks the driver the loader uses. Turn the Microsoft Vulnerable Driver Blocklist off.',
+        items: [
+            'Open **Windows Security → Device security → Core isolation**',
+            'Search **"Core isolation"** in the Start menu if you can’t find it',
+            'Turn off the **Microsoft Vulnerable Driver Blocklist**',
+            '**Reboot** to apply'
+        ]
+    },
+    {
+        tab: 'Core Isolation', title: 'Turn Off Memory Integrity',
+        description: 'Memory Integrity (Core Isolation) must be off or the driver will fail to load.',
+        items: [
+            'Open **Windows Security → Device security → Core isolation details**',
+            'Turn **Memory integrity** off',
+            '**Restart your PC** when prompted'
+        ],
+        info: 'Still failing after this? Disable Secure Boot in BIOS as a last resort.'
+    },
+    {
+        tab: 'Discord Overlay', title: 'Enable Discord In-Game Overlay',
+        description: 'The menu renders through the Discord overlay, so it has to be enabled for Fortnite.',
+        items: [
+            'Open **Discord → Settings → Game Overlay** and enable it',
+            'Go to **Registered Games**, add **Fortnite** if it’s missing',
+            'Make sure the **overlay toggle** for Fortnite is on',
+            'Keep Discord running while you play'
+        ],
+        link: { text: 'Open Discord', url: 'https://discord.com/app' }
+    }
+];
 
 // Helpers
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
