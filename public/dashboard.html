@@ -296,6 +296,63 @@
         }
         .email-prompt-form button:hover { background: #6d28d9; }
 
+        /* Guide view */
+        .guide-view { max-width: 800px; }
+        .guide-view h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .guide-view .guide-subtitle { font-size: 13px; color: #555568; margin-bottom: 28px; }
+        .guide-tabs {
+            display: flex; gap: 4px; margin-bottom: 24px;
+            overflow-x: auto; padding-bottom: 4px;
+        }
+        .guide-tab {
+            padding: 8px 16px; border-radius: 8px;
+            font-size: 12px; font-weight: 600; color: #555568;
+            background: transparent; border: 1px solid rgba(255,255,255,0.06);
+            cursor: pointer; font-family: inherit; transition: all 0.15s;
+            white-space: nowrap; display: flex; align-items: center; gap: 6px;
+        }
+        .guide-tab:hover { color: #b0b0c8; border-color: rgba(255,255,255,0.1); }
+        .guide-tab.active { color: #fff; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.1); }
+        .guide-tab svg { width: 14px; height: 14px; }
+        .guide-step-label {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 600; color: #555568;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        .guide-step-label span { color: #444460; }
+        .guide-view h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+        .guide-view p { font-size: 14px; color: #888898; line-height: 1.7; margin-bottom: 16px; }
+        .guide-view ul { list-style: none; padding: 0; margin-bottom: 20px; }
+        .guide-view ul li {
+            padding: 8px 0 8px 20px; position: relative;
+            font-size: 14px; color: #888898; line-height: 1.6;
+        }
+        .guide-view ul li::before {
+            content: ''; position: absolute; left: 0; top: 16px;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #555568;
+        }
+        .guide-view ul li strong { color: #d0d0de; }
+        .guide-info-box {
+            padding: 14px 18px; border-radius: 10px;
+            background: rgba(139,92,246,0.06);
+            border: 1px solid rgba(139,92,246,0.12);
+            font-size: 13px; color: #8b8baa; margin-bottom: 20px;
+        }
+        .guide-dl-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; color: #b0b0c8;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; text-decoration: none;
+            transition: all 0.15s;
+        }
+        .guide-dl-btn:hover { border-color: rgba(255,255,255,0.15); color: #e0e0ee; }
+        .guide-dl-btn svg { width: 16px; height: 16px; }
+
         @media (max-width: 768px) {
             .sidebar { width: 64px; padding: 16px 0; }
             .sidebar-logo { padding: 0; justify-content: center; }
@@ -319,10 +376,15 @@
     </div>
 
     <div class="sidebar-section">License</div>
-    <a href="#" class="sidebar-link active">
+    <a href="#" class="sidebar-link active" onclick="showProductsView();return false;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
         <span>My Products</span>
     </a>
+
+    <div id="docsSection" style="display:none">
+        <div class="sidebar-section">Documentation</div>
+        <div id="docsLinks"></div>
+    </div>
 
     <div class="sidebar-section">Community</div>
     <a href="#" class="sidebar-link" id="discordLink">
@@ -369,6 +431,8 @@
 <script>
 let token = '';
 let user = null;
+let loadedProducts = [];
+let guidesData = {};
 
 const DL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
 const KEY_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15.5 7.5 2.3-2.3a1 1 0 0 1 1.4 0l1.1 1.1a1 1 0 0 1 0 1.4L18 10"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>';
@@ -394,6 +458,7 @@ async function submitEmail() {
     const email = document.getElementById('promptEmail').value.trim();
     if (!email) return;
     document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up products...</div>';
+    await loadGuides();
     try {
         const res = await fetch('/api/lookup', {
             method: 'POST',
@@ -407,7 +472,126 @@ async function submitEmail() {
     }
 }
 
+const GUIDE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>';
+const PRODUCTS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>';
+
+async function loadGuides() {
+    try {
+        const res = await fetch('/api/guides');
+        guidesData = await res.json();
+    } catch(e) { guidesData = {}; }
+}
+
+function showGuideLinks(products) {
+    const docsSection = document.getElementById('docsSection');
+    const docsLinks = document.getElementById('docsLinks');
+    if (!products || products.length === 0) { docsSection.style.display = 'none'; return; }
+
+    const guideKeys = Object.keys(guidesData);
+    const matchedGuides = [];
+
+    for (const p of products) {
+        const pName = (p.name || '').toLowerCase();
+        for (const key of guideKeys) {
+            const guide = guidesData[key];
+            const gName = (guide.title || key).toLowerCase();
+            if (pName.includes(gName) || gName.includes(pName) || key.toLowerCase().includes(pName.replace(/\s+/g, '-'))) {
+                if (!matchedGuides.find(m => m.key === key)) {
+                    matchedGuides.push({ key, title: guide.title || key });
+                }
+            }
+        }
+    }
+
+    if (matchedGuides.length === 0 && products.length > 0) {
+        for (const p of products) {
+            matchedGuides.push({ key: '__product_' + (p._id || p.id), title: (p.name || 'Product') + ' Guide', productName: p.name });
+        }
+    }
+
+    if (matchedGuides.length === 0) { docsSection.style.display = 'none'; return; }
+
+    docsSection.style.display = 'block';
+    docsLinks.innerHTML = matchedGuides.map(g =>
+        `<a href="#" class="sidebar-link" onclick="showGuide('${g.key}');return false;">
+            ${GUIDE_SVG}
+            <span>${g.title}</span>
+        </a>`
+    ).join('');
+}
+
+function setActiveLink(el) {
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    if (el) el.classList.add('active');
+}
+
+function showProductsView() {
+    setActiveLink(document.querySelector('.sidebar-link'));
+    document.querySelector('.main-header h1').textContent = 'My Products';
+    renderProducts(loadedProducts);
+}
+
+function showGuide(key) {
+    const clicked = [...document.querySelectorAll('.sidebar-link')].find(l => l.onclick?.toString().includes(key) || l.getAttribute('onclick')?.includes(key));
+    setActiveLink(clicked);
+
+    const guide = guidesData[key];
+    const el = document.getElementById('content');
+
+    if (!guide || key.startsWith('__product_')) {
+        const productName = key.startsWith('__product_') ? (loadedProducts.find(p => '__product_' + (p._id || p.id) === key)?.name || 'Product') : key;
+        document.querySelector('.main-header h1').textContent = productName + ' Guide';
+        el.innerHTML = `
+            <div class="guide-view">
+                <p>No guide has been created for this product yet. Check back later or contact support.</p>
+            </div>`;
+        return;
+    }
+
+    document.querySelector('.main-header h1').textContent = guide.title || key;
+    const steps = guide.steps || [];
+
+    if (steps.length === 0) {
+        el.innerHTML = `<div class="guide-view"><p>${guide.content || 'No guide content yet.'}</p></div>`;
+        return;
+    }
+
+    let html = '<div class="guide-view">';
+    html += `<p class="guide-subtitle">Complete setup — follow every step before your first launch.</p>`;
+    html += '<div class="guide-tabs">';
+    steps.forEach((s, i) => {
+        html += `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i}, '${key}')">${s.icon || ''} ${s.tab || ('Step ' + (i+1))}</button>`;
+    });
+    html += '</div>';
+    html += `<div id="guideStepContent">${renderGuideStep(steps[0], 0, steps.length)}</div>`;
+    html += '</div>';
+    el.innerHTML = html;
+}
+
+function switchGuideStep(idx, key) {
+    const guide = guidesData[key];
+    if (!guide || !guide.steps) return;
+    document.querySelectorAll('.guide-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+    document.getElementById('guideStepContent').innerHTML = renderGuideStep(guide.steps[idx], idx, guide.steps.length);
+}
+
+function renderGuideStep(step, idx, total) {
+    let html = `<div class="guide-step-label">STEP ${idx + 1} <span>OF ${total}</span></div>`;
+    html += `<h2>${step.title || ''}</h2>`;
+    if (step.description) html += `<p>${step.description}</p>`;
+    if (step.items && step.items.length) {
+        html += '<ul>';
+        step.items.forEach(item => { html += `<li>${item}</li>`; });
+        html += '</ul>';
+    }
+    if (step.info) html += `<div class="guide-info-box">${step.info}</div>`;
+    if (step.link) html += `<a href="${step.link.url || '#'}" target="_blank" class="guide-dl-btn">${DL_SVG} ${step.link.text || 'Download'}</a>`;
+    return html;
+}
+
 function renderProducts(products) {
+    loadedProducts = products || [];
+    showGuideLinks(loadedProducts);
     const el = document.getElementById('content');
     if (!products || products.length === 0) {
         el.innerHTML = `
