@@ -297,60 +297,104 @@
         .email-prompt-form button:hover { background: #6d28d9; }
 
         /* Guide view */
-        .guide-view { max-width: 800px; }
-        .guide-view h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-        .guide-view .guide-subtitle { font-size: 13px; color: #555568; margin-bottom: 28px; }
+        .guide-view {
+            max-width: 900px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 16px;
+            padding: 36px 40px;
+        }
+        .guide-header { margin-bottom: 28px; }
+        .guide-header h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .guide-header p { font-size: 14px; color: #555568; line-height: 1.5; margin: 0; }
+
+        .guide-tabs-wrapper { position: relative; margin-bottom: 8px; }
         .guide-tabs {
-            display: flex; gap: 4px; margin-bottom: 24px;
-            overflow-x: auto; padding-bottom: 4px;
+            display: flex; gap: 2px;
+            overflow-x: auto; padding-bottom: 0;
+            scrollbar-width: none;
         }
+        .guide-tabs::-webkit-scrollbar { display: none; }
         .guide-tab {
-            padding: 8px 16px; border-radius: 8px;
-            font-size: 12px; font-weight: 600; color: #555568;
-            background: transparent; border: 1px solid rgba(255,255,255,0.06);
+            padding: 10px 18px; border-radius: 10px;
+            font-size: 13px; font-weight: 500; color: #555568;
+            background: transparent; border: none;
             cursor: pointer; font-family: inherit; transition: all 0.15s;
-            white-space: nowrap; display: flex; align-items: center; gap: 6px;
+            white-space: nowrap; display: flex; align-items: center; gap: 8px;
         }
-        .guide-tab:hover { color: #b0b0c8; border-color: rgba(255,255,255,0.1); }
-        .guide-tab.active { color: #fff; background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.1); }
-        .guide-tab svg { width: 14px; height: 14px; }
+        .guide-tab:hover { color: #b0b0c8; background: rgba(255,255,255,0.03); }
+        .guide-tab.active {
+            color: #fff; font-weight: 600;
+            background: rgba(255,255,255,0.06);
+        }
+        .guide-tab svg { width: 15px; height: 15px; opacity: 0.6; }
+        .guide-tab.active svg { opacity: 1; }
+
+        .guide-progress {
+            height: 3px; background: rgba(255,255,255,0.04);
+            border-radius: 2px; margin: 16px 0 28px;
+            overflow: hidden;
+        }
+        .guide-progress-bar {
+            height: 100%; background: #fff;
+            border-radius: 2px; transition: width 0.3s;
+        }
+
         .guide-step-label {
             display: inline-flex; align-items: center; gap: 8px;
-            font-size: 11px; font-weight: 600; color: #555568;
-            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+        .guide-step-label .step-num {
+            font-size: 11px; font-weight: 700; color: #888898;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px; border-radius: 5px;
+            letter-spacing: 0.5px;
+        }
+        .guide-step-label .step-of {
+            font-size: 11px; font-weight: 600; color: #444460;
+            letter-spacing: 0.5px;
+        }
+
+        .guide-view h2 {
+            font-size: 22px; font-weight: 700; color: #fff;
             margin-bottom: 12px;
         }
-        .guide-step-label span { color: #444460; }
-        .guide-view h2 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
-        .guide-view p { font-size: 14px; color: #888898; line-height: 1.7; margin-bottom: 16px; }
-        .guide-view ul { list-style: none; padding: 0; margin-bottom: 20px; }
+        .guide-view .guide-desc {
+            font-size: 14px; color: #777788; line-height: 1.7;
+            margin-bottom: 24px;
+        }
+        .guide-view ul {
+            list-style: none; padding: 0; margin-bottom: 28px;
+        }
         .guide-view ul li {
-            padding: 8px 0 8px 20px; position: relative;
-            font-size: 14px; color: #888898; line-height: 1.6;
+            padding: 10px 0 10px 24px; position: relative;
+            font-size: 14.5px; color: #777788; line-height: 1.6;
         }
         .guide-view ul li::before {
-            content: ''; position: absolute; left: 0; top: 16px;
-            width: 6px; height: 6px; border-radius: 50%;
-            background: #555568;
+            content: ''; position: absolute; left: 4px; top: 18px;
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #444460;
         }
-        .guide-view ul li strong { color: #d0d0de; }
+        .guide-view ul li strong { color: #e0e0ee; font-weight: 600; }
+
         .guide-info-box {
-            padding: 14px 18px; border-radius: 10px;
-            background: rgba(139,92,246,0.06);
-            border: 1px solid rgba(139,92,246,0.12);
-            font-size: 13px; color: #8b8baa; margin-bottom: 20px;
+            padding: 16px 20px; border-radius: 12px;
+            background: rgba(139,92,246,0.05);
+            border: 1px solid rgba(139,92,246,0.1);
+            font-size: 13.5px; color: #8b8baa; margin-bottom: 24px;
+            line-height: 1.5;
         }
         .guide-dl-btn {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 20px;
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 12px 24px;
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px; color: #b0b0c8;
-            font-size: 13px; font-weight: 600; cursor: pointer;
+            border-radius: 10px; color: #d0d0de;
+            font-size: 14px; font-weight: 600; cursor: pointer;
             font-family: inherit; text-decoration: none;
             transition: all 0.15s;
         }
-        .guide-dl-btn:hover { border-color: rgba(255,255,255,0.15); color: #e0e0ee; }
+        .guide-dl-btn:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.06); }
         .guide-dl-btn svg { width: 16px; height: 16px; }
 
         @media (max-width: 768px) {
@@ -543,26 +587,35 @@ function showGuide(key) {
         document.querySelector('.main-header h1').textContent = productName + ' Guide';
         el.innerHTML = `
             <div class="guide-view">
-                <p>No guide has been created for this product yet. Check back later or contact support.</p>
+                <div class="guide-header">
+                    <h1>${productName} Guide</h1>
+                    <p>No guide has been created for this product yet. Check back later or contact support.</p>
+                </div>
             </div>`;
         return;
     }
 
-    document.querySelector('.main-header h1').textContent = guide.title || key;
+    const title = guide.title || key;
+    const subtitle = guide.subtitle || 'Complete setup — follow every step before your first launch.';
+    document.querySelector('.main-header h1').textContent = title;
     const steps = guide.steps || [];
 
     if (steps.length === 0) {
-        el.innerHTML = `<div class="guide-view"><p>${guide.content || 'No guide content yet.'}</p></div>`;
+        el.innerHTML = `<div class="guide-view"><div class="guide-header"><h1>${title}</h1><p>${guide.content || 'No guide content yet.'}</p></div></div>`;
         return;
     }
 
+    const progressPct = Math.round((1 / steps.length) * 100);
+
     let html = '<div class="guide-view">';
-    html += `<p class="guide-subtitle">Complete setup — follow every step before your first launch.</p>`;
-    html += '<div class="guide-tabs">';
+    html += `<div class="guide-header"><h1>${title}</h1><p>${subtitle}</p></div>`;
+    html += '<div class="guide-tabs-wrapper"><div class="guide-tabs">';
     steps.forEach((s, i) => {
-        html += `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i}, '${key}')">${s.icon || ''} ${s.tab || ('Step ' + (i+1))}</button>`;
+        const icon = s.icon ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.icon}</svg>` : '';
+        html += `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i}, '${key}')">${icon} ${s.tab || ('Step ' + (i+1))}</button>`;
     });
-    html += '</div>';
+    html += '</div></div>';
+    html += `<div class="guide-progress"><div class="guide-progress-bar" id="guideProgress" style="width:${progressPct}%"></div></div>`;
     html += `<div id="guideStepContent">${renderGuideStep(steps[0], 0, steps.length)}</div>`;
     html += '</div>';
     el.innerHTML = html;
@@ -571,14 +624,17 @@ function showGuide(key) {
 function switchGuideStep(idx, key) {
     const guide = guidesData[key];
     if (!guide || !guide.steps) return;
+    const total = guide.steps.length;
     document.querySelectorAll('.guide-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-    document.getElementById('guideStepContent').innerHTML = renderGuideStep(guide.steps[idx], idx, guide.steps.length);
+    const bar = document.getElementById('guideProgress');
+    if (bar) bar.style.width = Math.round(((idx + 1) / total) * 100) + '%';
+    document.getElementById('guideStepContent').innerHTML = renderGuideStep(guide.steps[idx], idx, total);
 }
 
 function renderGuideStep(step, idx, total) {
-    let html = `<div class="guide-step-label">STEP ${idx + 1} <span>OF ${total}</span></div>`;
+    let html = `<div class="guide-step-label"><span class="step-num">STEP ${idx + 1}</span><span class="step-of">OF ${total}</span></div>`;
     html += `<h2>${step.title || ''}</h2>`;
-    if (step.description) html += `<p>${step.description}</p>`;
+    if (step.description) html += `<p class="guide-desc">${step.description}</p>`;
     if (step.items && step.items.length) {
         html += '<ul>';
         step.items.forEach(item => { html += `<li>${item}</li>`; });
