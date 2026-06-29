@@ -545,10 +545,10 @@ function signOut() {
     if (params.has('token')) {
         token = params.get('token');
         localStorage.setItem('od_token', token);
-        history.replaceState(null, '', '/dashboard.html');
+        history.replaceState(null, '', '/dashboard');
     } else if (params.has('email')) {
         const email = params.get('email');
-        history.replaceState(null, '', '/dashboard.html');
+        history.replaceState(null, '', '/dashboard');
         token = 'email_' + btoa(email);
         localStorage.setItem('od_token', token);
         updateUser({ email, global_name: email.split('@')[0] });

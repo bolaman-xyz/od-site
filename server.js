@@ -75,7 +75,7 @@ app.get('/auth/discord/callback', async (req, res) => {
             created: Date.now()
         });
 
-        res.redirect(`/dashboard.html#token=${sessionToken}`);
+        res.redirect(`/dashboard#token=${sessionToken}`);
     } catch (err) {
         console.error('Discord OAuth error:', err);
         res.redirect('/?error=server_error');
@@ -274,6 +274,10 @@ app.put('/api/admin/guide/:slug', authMiddleware, (req, res) => {
 app.get('/api/guides', (req, res) => { res.json(loadData().guides || {}); });
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+app.get('/downloads', (req, res) => res.sendFile(path.join(__dirname, 'public', 'downloads.html')));
+app.get('/guides', (req, res) => res.sendFile(path.join(__dirname, 'public', 'guides.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
 
 app.listen(PORT, '0.0.0.0', () => console.log(`Running on port ${PORT}`));
 
