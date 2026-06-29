@@ -272,7 +272,14 @@ app.put('/api/admin/product/:id', authMiddleware, (req, res) => {
     if (req.session.type !== 'admin') return res.status(403).json({ error: 'Not admin' });
     const data = loadData();
     if (!data.products) data.products = {};
-    data.products[req.params.id] = { ...data.products[req.params.id], ...req.body };
+    const merged = { ...data.products[req.params.id], ...req.body };
+    // If the admin changed the download link here, mark it admin-sourced
+    if (Object.prototype.hasOwnProperty.call(req.body, 'download_link')) {
+        merged.link_source = 'admin';
+        merged.link_updated_at = new Date().toISOString();
+        merged.link_updated_by = 'Admin Panel';
+    }
+    data.products[req.params.id] = merged;
     saveData(data);
     res.json({ ok: true });
 });
@@ -424,7 +431,14 @@ if (DISCORD_BOT_TOKEN) {
 
             const data = loadData();
             if (!data.products) data.products = {};
-            data.products[String(product.id)] = { ...data.products[String(product.id)], download_link: url };
+            const editor = interaction.user ? (interaction.user.username || interaction.user.tag || 'Discord') : 'Discord';
+            data.products[String(product.id)] = {
+                ...data.products[String(product.id)],
+                download_link: url,
+                link_source: 'discord',
+                link_updated_at: new Date().toISOString(),
+                link_updated_by: editor
+            };
             saveData(data);
 
             const embed = new EmbedBuilder()

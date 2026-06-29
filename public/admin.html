@@ -148,6 +148,19 @@
         .prod-name { font-size: 14px; font-weight: 600; color: #dddde8; flex: 1; }
         .prod-id { font-size: 11px; color: #33344a; }
         .prod-actions { display: flex; gap: 6px; }
+        .src-badge {
+            font-size: 10px; font-weight: 700; padding: 2px 7px;
+            border-radius: 5px; margin-left: 6px; vertical-align: middle;
+            letter-spacing: 0.3px;
+        }
+        .src-discord { background: rgba(88,101,242,0.15); color: #8b9cf7; border: 1px solid rgba(88,101,242,0.3); }
+        .src-admin { background: rgba(255,255,255,0.05); color: #66667e; border: 1px solid rgba(255,255,255,0.08); }
+        .discord-warn {
+            display: none; padding: 11px 14px; border-radius: 9px;
+            background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.3);
+            color: #9aa8f7; font-size: 12px; line-height: 1.5; margin-bottom: 16px;
+        }
+        .discord-warn.show { display: block; }
 
         /* Modal */
         .modal-overlay {
@@ -284,6 +297,7 @@
     <div class="modal">
         <h2 id="modalTitle">Edit Product</h2>
         <input type="hidden" id="editId">
+        <div class="discord-warn" id="discordWarn"></div>
         <div class="field">
             <label>Download Link</label>
             <input type="text" id="editLink" placeholder="https://mega.nz/... or direct link">
@@ -406,10 +420,19 @@ function renderProducts() {
     list.innerHTML = products.map(p => {
         const override = config.products?.[String(p._id || p.id)] || {};
         const hasOverride = Object.keys(override).length > 0;
+        const viaDiscord = override.link_source === 'discord';
+        const discordBadge = viaDiscord
+            ? ` <span class="src-badge src-discord">🔵 Link set via Discord</span>`
+            : (override.download_link ? ` <span class="src-badge src-admin">Link set here</span>` : '');
+        const when = override.link_updated_at ? new Date(override.link_updated_at).toLocaleString() : '';
+        const whoWhen = (override.link_updated_at || override.link_updated_by)
+            ? `<div class="prod-id" style="margin-top:3px;color:${viaDiscord ? '#5b8def' : '#33344a'};">${viaDiscord ? 'Changed on Discord' : 'Changed in admin'}${override.link_updated_by ? ' by ' + override.link_updated_by : ''}${when ? ' · ' + when : ''}</div>`
+            : '';
         return `<div class="prod-item">
             <div style="flex:1">
-                <div class="prod-name">${p.name || 'Untitled'}${hasOverride ? ' <span style="color:#8b5cf6;font-size:10px;">MODIFIED</span>' : ''}</div>
+                <div class="prod-name">${p.name || 'Untitled'}${hasOverride ? ' <span style="color:#8b5cf6;font-size:10px;">MODIFIED</span>' : ''}${discordBadge}</div>
                 <div class="prod-id">ID: ${p._id || p.id}${override.download_link ? ' · Link: ' + override.download_link.substring(0,40) + '...' : ''}</div>
+                ${whoWhen}
             </div>
             <div class="prod-actions">
                 <button class="btn btn-sm btn-outline" onclick="editProduct('${p._id || p.id}','${(p.name||'').replace(/'/g,"\\'")}')">Edit</button>
@@ -426,6 +449,16 @@ function editProduct(id, name) {
     document.getElementById('editStatus').value = override.status_text || '';
     document.getElementById('editBadge').value = override.badge_text || '';
     document.getElementById('editName').value = override.name || '';
+
+    const warn = document.getElementById('discordWarn');
+    if (override.link_source === 'discord') {
+        const when = override.link_updated_at ? new Date(override.link_updated_at).toLocaleString() : '';
+        warn.innerHTML = `🔵 <strong>This download link was last set from Discord</strong>${override.link_updated_by ? ' by ' + override.link_updated_by : ''}${when ? ' on ' + when : ''}.<br>Heads up — don't overwrite it here unless you mean to. Saving a new link will switch control back to the admin panel.`;
+        warn.classList.add('show');
+    } else {
+        warn.classList.remove('show');
+        warn.innerHTML = '';
+    }
     document.getElementById('productModal').classList.add('show');
 }
 
