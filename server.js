@@ -26,6 +26,51 @@ function saveUsers(users) { fs.writeFileSync(USERS_FILE, JSON.stringify(users, n
 
 const sessions = new Map();
 
+const SELLAUTH_HEADERS = { 'Authorization': `Bearer ${SELLAUTH_API_KEY}`, 'Content-Type': 'application/json' };
+
+// Fetch EVERY invoice belonging to an email, not just the first page.
+// Older customers' invoices live on later pages, so we page through all of
+// them (after a fast server-side `search` attempt) and exact-match the email.
+async function fetchInvoicesByEmail(email) {
+    const emailLower = (email || '').toLowerCase().trim();
+    const matchesEmail = inv => {
+        const ce = inv.customer_email || inv.email || inv.customer?.email || '';
+        return ce.toLowerCase() === emailLower;
+    };
+    const base = `https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/invoices`;
+    const found = [];
+    const seen = new Set();
+    const maxPages = 300;
+
+    async function scan(url) {
+        let page = 1;
+        while (page <= maxPages) {
+            const sep = url.includes('?') ? '&' : '?';
+            const r = await fetch(`${url}${sep}page=${page}&perPage=100`, { headers: SELLAUTH_HEADERS });
+            const j = await r.json();
+            const invoices = j.data || (Array.isArray(j) ? j : []);
+            if (!Array.isArray(invoices) || invoices.length === 0) break;
+            for (const inv of invoices) {
+                if (matchesEmail(inv) && !seen.has(inv.id)) { seen.add(inv.id); found.push(inv); }
+            }
+            const lastPage = j.last_page || j.meta?.last_page;
+            if (lastPage && page >= lastPage) break;
+            if (invoices.length < 100) break;
+            page++;
+        }
+    }
+
+    // Fast path: ask SellAuth to filter by the email. If unsupported it just
+    // returns everything (still correct, we exact-match below).
+    try { await scan(`${base}?search=${encodeURIComponent(email)}`); } catch (e) { console.error('invoice search error:', e.message); }
+    // Fallback: full scan if the search returned nothing useful.
+    if (found.length === 0) {
+        try { await scan(base); } catch (e) { console.error('invoice scan error:', e.message); }
+    }
+    console.log(`Invoice lookup for ${email}: ${found.length} matched`);
+    return found;
+}
+
 function authMiddleware(req, res, next) {
     const token = req.headers['authorization']?.replace('Bearer ', '');
     if (!token || !sessions.has(token)) return res.status(401).json({ error: 'Unauthorized' });
@@ -94,24 +139,27 @@ app.get('/api/me', authMiddleware, (req, res) => {
     res.json(req.session);
 });
 
+// Forget the caller's saved email so they can enter a different one
+app.post('/api/clear-email', authMiddleware, (req, res) => {
+    const session = req.session || {};
+    session.email = null;
+    session.saved_email = null;
+    if (session.discord_id) {
+        const users = loadUsers();
+        delete users[session.discord_id];
+        saveUsers(users);
+    }
+    res.json({ ok: true });
+});
+
 // Lookup customer products by email
 app.get('/api/my-products', authMiddleware, async (req, res) => {
     const email = req.session.email;
     if (!email) return res.json({ products: [], message: 'No email linked' });
 
     try {
-        // Search invoices by email
-        const invoiceRes = await fetch(`https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/invoices?page=1&perPage=100`, {
-            headers: { 'Authorization': `Bearer ${SELLAUTH_API_KEY}`, 'Content-Type': 'application/json' }
-        });
-        const invoiceData = await invoiceRes.json();
-        const invoices = invoiceData.data || invoiceData || [];
-
-        // Filter invoices by customer email
-        const userInvoices = Array.isArray(invoices) ? invoices.filter(inv =>
-            inv.customer_email?.toLowerCase() === email.toLowerCase() ||
-            inv.email?.toLowerCase() === email.toLowerCase()
-        ) : [];
+        // Search ALL invoices by email (paginated — finds older customers too)
+        const userInvoices = await fetchInvoicesByEmail(email);
 
         // Get all products for reference
         const prodRes = await fetch(`https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/products?page=1&perPage=100`, {
@@ -180,26 +228,7 @@ app.post('/api/lookup', authMiddleware, async (req, res) => {
 
     // Re-fetch with new email
     try {
-        const invoiceRes = await fetch(`https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/invoices?page=1&perPage=100`, {
-            headers: { 'Authorization': `Bearer ${SELLAUTH_API_KEY}`, 'Content-Type': 'application/json' }
-        });
-        const invoiceData = await invoiceRes.json();
-        const invoices = invoiceData.data || invoiceData || [];
-
-        console.log('Lookup email:', email);
-        console.log('Total invoices from API:', Array.isArray(invoices) ? invoices.length : 'not array');
-        if (Array.isArray(invoices) && invoices.length > 0) {
-            console.log('First invoice keys:', Object.keys(invoices[0]));
-            console.log('First invoice sample:', JSON.stringify(invoices[0]).substring(0, 500));
-        }
-
-        const emailLower = email.toLowerCase();
-        const userInvoices = Array.isArray(invoices) ? invoices.filter(inv => {
-            const ce = inv.customer_email || inv.email || inv.customer?.email || '';
-            return ce.toLowerCase() === emailLower;
-        }) : [];
-
-        console.log('Matched invoices:', userInvoices.length);
+        const userInvoices = await fetchInvoicesByEmail(email);
 
         const prodRes = await fetch(`https://api.sellauth.com/v1/shops/${SELLAUTH_SHOP_ID}/products?page=1&perPage=100`, {
             headers: { 'Authorization': `Bearer ${SELLAUTH_API_KEY}`, 'Content-Type': 'application/json' }

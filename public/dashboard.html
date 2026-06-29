@@ -436,6 +436,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
         <span>My Products</span>
     </a>
+    <a href="#" class="sidebar-link" onclick="changeEmail();return false;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        <span>Use a different email</span>
+    </a>
 
     <div id="docsSection" style="display:none">
         <div class="sidebar-section">Documentation</div>
@@ -771,6 +775,19 @@ function closeModal() { document.getElementById('emailModal').classList.remove('
 function signOut() {
     localStorage.removeItem('od_token');
     window.location.href = '/';
+}
+
+async function changeEmail() {
+    if (!confirm('Remove your current email and look up a different one?')) return;
+    try {
+        await fetch('/api/clear-email', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+    } catch (e) {}
+    loadedProducts = [];
+    showGuideLinks([]);
+    setActiveLink(document.querySelector('.sidebar-link'));
+    document.querySelector('.main-header h1').textContent = 'My Products';
+    document.getElementById('userSub').textContent = 'Email lookup';
+    showEmailPrompt();
 }
 
 (async () => {
