@@ -777,6 +777,8 @@ function signOut() {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
 
+    await loadGuides();
+
     if (params.has('token')) {
         token = params.get('token');
         localStorage.setItem('od_token', token);
