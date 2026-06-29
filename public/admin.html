@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin | OD</title>
+    <link rel="icon" type="image/png" href="/pfp.png">
+
+
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -95,11 +98,10 @@
         }
         .dash-nav-left { display: flex; align-items: center; gap: 16px; }
         .logo-box {
-            width: 28px; height: 28px;
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            border-radius: 7px; display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800; color: #fff;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
         }
+        .logo-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
         .dash-title { font-size: 13px; font-weight: 600; color: #8b5cf6; }
         .logout-btn {
             font-size: 12px; font-weight: 500; color: #44455a;
@@ -259,7 +261,7 @@
 <div class="dashboard" id="dashView">
     <div class="dash-nav">
         <div class="dash-nav-left">
-            <div class="logo-box">OD</div>
+            <div class="logo-box"><img src="/pfp.png" alt="OD"></div>
             <span class="dash-title">Admin Panel</span>
         </div>
         <button class="logout-btn" onclick="logout()">Sign Out</button>
