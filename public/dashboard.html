@@ -381,6 +381,14 @@
         }
         .guide-view ul li strong { color: #e0e0ee; font-weight: 600; }
 
+        .guide-img {
+            display: block; max-width: 100%; height: auto;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+            margin: 0 0 24px; cursor: zoom-in;
+            transition: border-color 0.15s;
+        }
+        .guide-img:hover { border-color: rgba(255,255,255,0.18); }
+
         .guide-info-box {
             padding: 16px 20px; border-radius: 12px;
             background: rgba(139,92,246,0.05);
@@ -641,6 +649,8 @@ function renderGuideStep(step, idx, total) {
         step.items.forEach(item => { html += `<li>${item}</li>`; });
         html += '</ul>';
     }
+    const imgs = step.images && step.images.length ? step.images : (step.image ? [step.image] : []);
+    imgs.forEach(src => { html += `<img class="guide-img" src="${src}" alt="" loading="lazy" onclick="window.open(this.src,'_blank')">`; });
     if (step.info) html += `<div class="guide-info-box">${step.info}</div>`;
     if (step.link) html += `<a href="${step.link.url || '#'}" target="_blank" class="guide-dl-btn">${DL_SVG} ${step.link.text || 'Download'}</a>`;
     return html;
