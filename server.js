@@ -128,6 +128,9 @@ app.get('/api/my-products', authMiddleware, async (req, res) => {
                     seenIds.add(pid);
                     const product = Array.isArray(allProducts) ? allProducts.find(p => p.id === pid) : null;
                     const override = config.products?.[String(pid)] || {};
+                    const variantName = item.variant_name || item.variant?.name || inv.variant_name || inv.variant?.name || '';
+                    const variantId = item.variant_id || item.variant?.id || inv.variant_id || inv.variant?.id || '';
+                    const purchasedVariant = variantName ? [{ name: variantName, id: variantId }] : [];
                     purchasedProducts.push({
                         ...(product || {}),
                         ...override,
@@ -135,7 +138,9 @@ app.get('/api/my-products', authMiddleware, async (req, res) => {
                         invoice_id: inv.id,
                         purchased_at: inv.created_at || inv.paid_at,
                         delivered: inv.delivered || inv.status === 'completed',
-                        deliverables: item.deliverables || inv.deliverables || null
+                        deliverables: item.deliverables || inv.deliverables || null,
+                        variants: purchasedVariant,
+                        purchased_variant: variantName
                     });
                 }
             }
@@ -198,7 +203,10 @@ app.post('/api/lookup', authMiddleware, async (req, res) => {
                     seenIds.add(pid);
                     const product = Array.isArray(allProducts) ? allProducts.find(p => p.id === pid) : null;
                     const override = config.products?.[String(pid)] || {};
-                    purchasedProducts.push({ ...(product || {}), ...override, _id: pid });
+                    const variantName = item.variant_name || item.variant?.name || inv.variant_name || inv.variant?.name || '';
+                    const variantId = item.variant_id || item.variant?.id || inv.variant_id || inv.variant?.id || '';
+                    const purchasedVariant = variantName ? [{ name: variantName, id: variantId }] : [];
+                    purchasedProducts.push({ ...(product || {}), ...override, _id: pid, variants: purchasedVariant, purchased_variant: variantName });
                 }
             }
         }
