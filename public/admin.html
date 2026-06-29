@@ -55,7 +55,11 @@
             font-family: inherit; outline: none;
             transition: border-color 0.15s;
         }
-        .field input:focus, .field textarea:focus { border-color: rgba(139,92,246,0.3); }
+        .field input:focus, .field textarea:focus, .field select:focus { border-color: rgba(139,92,246,0.3); }
+        .field select { appearance: none; -webkit-appearance: none; cursor: pointer; }
+        .field select option, .field select optgroup {
+            background: #15172b; color: #e0e0ee;
+        }
         .field textarea { resize: vertical; min-height: 80px; }
         .btn {
             width: 100%; padding: 10px;
