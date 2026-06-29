@@ -302,6 +302,23 @@ app.delete('/api/admin/guide/:slug', authMiddleware, (req, res) => {
     res.json({ ok: true });
 });
 
+app.put('/api/admin/template/:slug', authMiddleware, (req, res) => {
+    if (req.session.type !== 'admin') return res.status(403).json({ error: 'Not admin' });
+    const data = loadData();
+    if (!data.templates) data.templates = {};
+    data.templates[req.params.slug] = req.body;
+    saveData(data);
+    res.json({ ok: true });
+});
+
+app.delete('/api/admin/template/:slug', authMiddleware, (req, res) => {
+    if (req.session.type !== 'admin') return res.status(403).json({ error: 'Not admin' });
+    const data = loadData();
+    if (data.templates) delete data.templates[req.params.slug];
+    saveData(data);
+    res.json({ ok: true });
+});
+
 app.get('/api/guides', (req, res) => {
     const guides = loadData().guides || {};
     // strip any null/empty entries left over from old deletes

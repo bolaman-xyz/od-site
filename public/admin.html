@@ -328,9 +328,12 @@
             <div class="hint">Pick which purchased product this guide appears under.</div>
         </div>
 
-        <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="section-label" style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
             <span>Steps</span>
-            <button class="btn btn-sm btn-outline" type="button" onclick="loadAsxTemplate()" style="font-size:11px;padding:5px 10px;">⚡ ASX Template</button>
+            <div style="display:flex;gap:6px;align-items:center;">
+                <select id="templatePicker" onchange="applyTemplate(this.value)" style="width:auto;padding:6px 8px;font-size:11px;"></select>
+                <button class="btn btn-sm btn-outline" type="button" onclick="saveAsTemplate()" style="font-size:11px;padding:5px 10px;">💾 Save as Template</button>
+            </div>
         </div>
         <div id="stepsContainer"></div>
         <button class="btn btn-sm btn-outline" type="button" onclick="addStep()" style="margin-top:8px;">+ Add Step</button>
@@ -545,6 +548,7 @@ function openGuideModal() {
     document.getElementById('guideTitle').value = '';
     document.getElementById('guideSubtitle').value = '';
     fillProductDropdown('');
+    fillTemplatePicker();
     document.getElementById('stepsContainer').innerHTML = '';
     addStep();
     document.getElementById('guideModal').classList.add('show');
@@ -557,10 +561,73 @@ function editGuide(slug) {
     document.getElementById('guideTitle').value = g.title || '';
     document.getElementById('guideSubtitle').value = g.subtitle || '';
     fillProductDropdown(g.productId || '');
+    fillTemplatePicker();
     const c = document.getElementById('stepsContainer');
     c.innerHTML = '';
     (g.steps && g.steps.length ? g.steps : [{}]).forEach(s => addStep(s));
     document.getElementById('guideModal').classList.add('show');
+}
+
+// ---- Templates ----
+function fillTemplatePicker() {
+    const sel = document.getElementById('templatePicker');
+    const tpls = config.templates || {};
+    const keys = Object.keys(tpls).filter(k => tpls[k] && typeof tpls[k] === 'object');
+    let html = '<option value="">Apply template…</option>';
+    html += '<option value="__asx">⚡ ASX (built-in)</option>';
+    keys.forEach(k => { html += `<option value="${k}">${esc(tpls[k].name || k)}</option>`; });
+    if (keys.length) html += '<option value="__del">🗑 Delete a template…</option>';
+    sel.innerHTML = html;
+    sel.value = '';
+}
+
+function applyTemplate(val) {
+    const sel = document.getElementById('templatePicker');
+    if (!val) return;
+    if (val === '__asx') { loadAsxTemplate(); sel.value = ''; return; }
+    if (val === '__del') { deleteTemplatePrompt(); sel.value = ''; return; }
+    const t = (config.templates || {})[val];
+    sel.value = '';
+    if (!t) return;
+    if (!document.getElementById('guideSubtitle').value.trim() && t.subtitle) document.getElementById('guideSubtitle').value = t.subtitle;
+    document.getElementById('stepsContainer').innerHTML = '';
+    (t.steps && t.steps.length ? t.steps : [{}]).forEach(s => addStep(s));
+    toast('Template applied');
+}
+
+async function saveAsTemplate() {
+    const steps = readSteps();
+    if (!steps.length) { toast('Add a step first'); return; }
+    const name = prompt('Name this template (e.g. "External Setup"):');
+    if (!name || !name.trim()) return;
+    const cleanName = name.trim();
+    const slug = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || ('tpl-' + Date.now());
+    const body = { name: cleanName, subtitle: document.getElementById('guideSubtitle').value.trim(), steps };
+    await fetch('/api/admin/template/' + slug, {
+        method: 'PUT', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+    if (!config.templates) config.templates = {};
+    config.templates[slug] = body;
+    fillTemplatePicker();
+    toast('Saved template "' + cleanName + '"');
+}
+
+async function deleteTemplatePrompt() {
+    const tpls = config.templates || {};
+    const keys = Object.keys(tpls).filter(k => tpls[k] && typeof tpls[k] === 'object');
+    if (!keys.length) return;
+    const list = keys.map((k, i) => (i + 1) + '. ' + (tpls[k].name || k)).join('\n');
+    const pick = prompt('Type the number of the template to delete:\n\n' + list);
+    if (!pick) return;
+    const idx = parseInt(pick.trim(), 10) - 1;
+    if (isNaN(idx) || idx < 0 || idx >= keys.length) { toast('Invalid choice'); return; }
+    const slug = keys[idx];
+    const nm = tpls[slug].name || slug;
+    await fetch('/api/admin/template/' + slug, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token } });
+    delete config.templates[slug];
+    fillTemplatePicker();
+    toast('Deleted template "' + nm + '"');
 }
 
 async function saveGuide() {
