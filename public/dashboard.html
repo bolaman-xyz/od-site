@@ -20,88 +20,76 @@
 
         /* Sidebar */
         .sidebar {
-            width: 240px; flex-shrink: 0;
-            background: rgba(8,8,14,0.92);
-            backdrop-filter: blur(16px);
+            width: 250px; flex-shrink: 0;
+            background: rgba(8,8,14,0.95);
             border-right: 1px solid rgba(255,255,255,0.04);
             display: flex; flex-direction: column;
-            padding: 24px 0 16px;
+            padding: 28px 0 16px;
             position: fixed; top: 0; left: 0; bottom: 0;
             z-index: 10;
         }
         .sidebar-logo {
-            display: flex; align-items: center; gap: 12px;
-            padding: 0 24px; margin-bottom: 32px;
+            display: flex; align-items: center; gap: 14px;
+            padding: 0 24px; margin-bottom: 40px;
         }
         .logo-icon {
-            width: 34px; height: 34px;
+            width: 36px; height: 36px;
             background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            border-radius: 9px;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800; color: #fff;
-            box-shadow: 0 4px 12px rgba(124,58,237,0.25);
+            font-size: 12px; font-weight: 800; color: #fff;
         }
-        .logo-name { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+        .logo-name { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
 
         .sidebar-section {
-            font-size: 10px; font-weight: 600; color: #3a3a50;
-            text-transform: uppercase; letter-spacing: 1.4px;
-            padding: 0 24px; margin-bottom: 8px; margin-top: 24px;
+            font-size: 11px; font-weight: 600; color: #444460;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            padding: 0 24px; margin-bottom: 10px; margin-top: 28px;
         }
+        .sidebar-section:first-of-type { margin-top: 0; }
         .sidebar-link {
             display: flex; align-items: center; gap: 12px;
-            padding: 10px 24px;
-            margin: 2px 12px;
-            border-radius: 8px;
-            font-size: 13.5px; font-weight: 500; color: #5a5a72;
+            padding: 10px 16px;
+            margin: 3px 14px;
+            border-radius: 10px;
+            font-size: 14px; font-weight: 500; color: #666680;
             text-decoration: none;
             transition: all 0.15s;
         }
-        .sidebar-link:hover { color: #c0c0d4; background: rgba(255,255,255,0.03); }
+        .sidebar-link:hover { color: #b0b0c8; background: rgba(255,255,255,0.03); }
         .sidebar-link.active {
-            color: #fff;
-            background: rgba(139,92,246,0.1);
+            color: #fff; font-weight: 600;
+            background: rgba(255,255,255,0.07);
         }
-        .sidebar-link.active svg { color: #8b5cf6; }
-        .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(255,255,255,0.04);
-            margin: 16px 24px;
-        }
+        .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
+        .sidebar-link.active svg { opacity: 1; }
 
         .sidebar-bottom {
             margin-top: auto;
-            padding: 16px 20px;
-            margin: 0 12px;
-            border-top: 1px solid rgba(255,255,255,0.04);
+            padding: 18px 24px;
             display: flex; align-items: center; gap: 12px;
         }
         .user-avatar {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(139,92,246,0.12);
-            border: 2px solid rgba(139,92,246,0.2);
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,255,255,0.08);
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; font-weight: 600; color: #8b5cf6;
+            font-size: 13px; font-weight: 600; color: #888;
             overflow: hidden;
         }
         .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .user-info { flex: 1; min-width: 0; }
         .user-name { font-size: 13px; font-weight: 600; color: #e0e0ee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-sub { font-size: 10px; color: #4a4a60; margin-top: 1px; }
+        .user-sub { font-size: 10px; color: #555568; margin-top: 2px; }
         .logout-btn {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 6px; cursor: pointer;
-            color: #444458; transition: all 0.15s; padding: 6px;
-            display: flex; align-items: center; justify-content: center;
+            background: none; border: none; cursor: pointer;
+            color: #444460; transition: color 0.15s; padding: 4px;
         }
-        .logout-btn:hover { color: #ef4444; background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.15); }
-        .logout-btn svg { width: 15px; height: 15px; }
+        .logout-btn:hover { color: #aaa; }
+        .logout-btn svg { width: 16px; height: 16px; }
 
         /* Main */
         .main {
-            flex: 1; margin-left: 240px;
+            flex: 1; margin-left: 250px;
         }
         .main-header {
             display: flex; align-items: center; justify-content: space-between;
