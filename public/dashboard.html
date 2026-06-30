@@ -148,6 +148,8 @@
     .guide-dl-btn.primary:hover { background: #e8e8e8; transform: translateY(-1px); }
     .guide-dl-btn svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
     .guide-dl-btn.primary svg { opacity: 1; }
+    .guide-video { margin: 20px 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 16px 40px rgba(0,0,0,0.4); aspect-ratio: 16/9; background: #000; }
+    .guide-video iframe { width: 100%; height: 100%; border: 0; }
     .guide-subsection { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
     .guide-subsection h5 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 10px; }
     .guide-feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 14px; }
@@ -444,6 +446,7 @@ function renderGuideStep(step, idx, total) {
     const imgs = step.images?.length ? step.images : (step.image ? [step.image] : []);
     imgs.forEach(src => { html += `<div class="guide-img-frame" onclick="window.open('${src}','_blank')"><img src="${src}" alt="" loading="lazy"></div>`; });
     if (step.info) html += `<div class="guide-callout">${step.info}</div>`;
+    if (step.youtube) html += `<div class="guide-video"><iframe src="https://www.youtube-nocookie.com/embed/${step.youtube}" title="Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
     if (step.link) html += `<div class="guide-downloads"><a href="${step.link.url || '#'}" target="_blank" class="guide-dl-btn primary">${DL_SVG} ${step.link.text || 'Download'}</a></div>`;
     html += '</div>';
     return html;

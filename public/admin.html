@@ -542,6 +542,7 @@ function stepBlockHtml(s) {
         <div class="field"><label>Bullet Points (one per line · wrap text in **bold**)</label><textarea class="sb-items" style="min-height:90px;" placeholder="**Windows 10 or 11** (64-bit)&#10;**Administrator account** — run as Admin">${esc(items)}</textarea></div>
         <div class="field"><label>Image URLs (optional · one per line)</label><textarea class="sb-images" style="min-height:50px;" placeholder="https://i.imgur.com/xxxx.png&#10;https://cdn.discordapp.com/attachments/.../shot.png">${esc((s.images || (s.image ? [s.image] : [])).join('\n'))}</textarea><div class="hint">Paste a direct image link (right-click image → Copy image address). Discord/imgur links work.</div></div>
         <div class="field"><label>Info Box (optional)</label><input class="sb-info" value="${esc(s.info)}" placeholder="Product: ASX External · Executable: loader.exe"></div>
+        <div class="field"><label>YouTube Video URL (optional)</label><input class="sb-youtube" value="${esc(s.youtube)}" placeholder="https://www.youtube.com/watch?v=xxxx  or  paste video ID only"></div>
         <div class="field-row">
             <div class="field"><label>Button Text (optional)</label><input class="sb-linktext" value="${esc(s.link?.text)}" placeholder="Download WinRAR"></div>
             <div class="field"><label>Button URL (optional)</label><input class="sb-linkurl" value="${esc(s.link?.url)}" placeholder="https://..."></div>
@@ -567,11 +568,16 @@ function readSteps() {
             .map(x => x.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'));
         const images = b.querySelector('.sb-images').value.split('\n').map(x => x.trim()).filter(Boolean);
         const info = b.querySelector('.sb-info').value.trim();
+        const youtubeRaw = b.querySelector('.sb-youtube').value.trim();
         const linkText = b.querySelector('.sb-linktext').value.trim();
         const linkUrl = b.querySelector('.sb-linkurl').value.trim();
         const step = { tab, title, description, items };
         if (images.length) step.images = images;
         if (info) step.info = info;
+        if (youtubeRaw) {
+            const ytMatch = youtubeRaw.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+            step.youtube = ytMatch ? ytMatch[1] : youtubeRaw;
+        }
         if (linkText || linkUrl) step.link = { text: linkText || 'Download', url: linkUrl || '#' };
         return step;
     }).filter(s => s.tab || s.title || s.items.length || (s.images && s.images.length));
