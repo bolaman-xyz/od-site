@@ -314,8 +314,13 @@
         .guide-header p { font-size: 14px; color: #555568; line-height: 1.5; margin: 0; }
 
         .guide-tabs-wrapper { position: relative; margin-bottom: 8px; }
+        .guide-tabs-scroll-row { display: flex; align-items: center; }
+        .guide-tab-arrow { flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: none; border: none; color: #555568; cursor: pointer; transition: all 0.15s; opacity: 0; pointer-events: none; }
+        .guide-tab-arrow.visible { opacity: 1; pointer-events: auto; }
+        .guide-tab-arrow:hover { background: rgba(255,255,255,0.05); color: #b0b0c8; }
+        .guide-tab-arrow svg { width: 14px; height: 14px; }
         .guide-tabs {
-            display: flex; gap: 2px;
+            display: flex; gap: 2px; flex: 1;
             overflow-x: auto; padding-bottom: 0;
             scrollbar-width: none;
         }
@@ -623,18 +628,40 @@ function showGuide(key) {
 
     let html = '<div class="guide-view">';
     html += `<div class="guide-header"><h1>${title}</h1><p>${subtitle}</p></div>`;
-    html += '<div class="guide-tabs-wrapper"><div class="guide-tabs">';
+    const PREV_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>';
+    const NEXT_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+    html += `<div class="guide-tabs-wrapper"><div class="guide-tabs-scroll-row"><button class="guide-tab-arrow" id="guide-tab-prev" onclick="scrollGuideTabs(-1)">${PREV_ARROW}</button><div class="guide-tabs" id="guide-tabs">`;
     steps.forEach((s, i) => {
         const icon = s.icon ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.icon}</svg>` : '';
         html += `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i}, '${key}')">${icon} ${s.tab || ('Step ' + (i+1))}</button>`;
     });
-    html += '</div></div>';
+    html += `</div><button class="guide-tab-arrow" id="guide-tab-next" onclick="scrollGuideTabs(1)">${NEXT_ARROW}</button></div></div>`;
     html += `<div class="guide-progress"><div class="guide-progress-bar" id="guideProgress" style="width:${progressPct}%"></div></div>`;
     html += `<div id="guideStepContent">${renderGuideStep(steps[0], 0, steps.length)}</div>`;
     html += '</div>';
     el.innerHTML = html;
+    initGuideTabArrows();
 }
 
+function scrollGuideTabs(dir) {
+    const el = document.getElementById('guide-tabs');
+    if (el) el.scrollBy({ left: dir * 200, behavior: 'smooth' });
+}
+function updateGuideTabArrows() {
+    const t = document.getElementById('guide-tabs');
+    const prev = document.getElementById('guide-tab-prev');
+    const next = document.getElementById('guide-tab-next');
+    if (!t || !prev || !next) return;
+    prev.classList.toggle('visible', t.scrollLeft > 2);
+    next.classList.toggle('visible', t.scrollLeft + t.clientWidth < t.scrollWidth - 2);
+}
+function initGuideTabArrows() {
+    const t = document.getElementById('guide-tabs');
+    if (!t) return;
+    t.addEventListener('scroll', updateGuideTabArrows, { passive: true });
+    window.addEventListener('resize', updateGuideTabArrows);
+    setTimeout(updateGuideTabArrows, 50);
+}
 function switchGuideStep(idx, key) {
     const guide = guidesData[key];
     if (!guide || !guide.steps) return;
