@@ -120,28 +120,39 @@
     .guide-tab { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; color: var(--color-muted); background: transparent; border: 1px solid transparent; cursor: pointer; transition: 0.25s; white-space: nowrap; font-family: inherit; }
     .guide-tab:hover { color: var(--color-white); background: rgba(255,255,255,0.04); }
     .guide-tab.active { color: var(--color-white); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
-    .guide-tab svg { width: 14px; height: 14px; opacity: 0.6; transition: opacity 0.2s; }
-    .guide-tab:hover svg, .guide-tab.active svg { opacity: 1; }
+    .guide-tab .tab-icon { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.6; transition: opacity 0.2s; }
+    .guide-tab:hover .tab-icon, .guide-tab.active .tab-icon { opacity: 1; }
     .guide-progress { height: 2px; background: rgba(255,255,255,0.04); flex-shrink: 0; }
     .guide-progress-bar { height: 100%; background: rgba(124,58,237,0.7); transition: width 0.3s; }
     .guide-body { flex: 1; overflow-y: auto; padding: 28px 32px 32px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
     .guide-body::-webkit-scrollbar { width: 6px; }
     .guide-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    .guide-panel { display: none; animation: guide-fade 0.3s ease; }
+    .guide-panel { display: none; animation: guide-fade 0.35s ease; }
     .guide-panel.active { display: block; }
-    .step-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.35); margin-bottom: 12px; }
-    .step-badge span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; }
+    .step-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }
+    .step-badge span { background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 6px; }
     .guide-panel h4 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.3px; }
-    .guide-panel p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
+    .guide-panel p { color: rgba(255,255,255,0.62); font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
     .guide-panel ul, .guide-panel ol { margin: 12px 0 16px 20px; }
-    .guide-panel li { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.7; margin-bottom: 8px; }
+    .guide-panel li { color: rgba(255,255,255,0.62); font-size: 14px; line-height: 1.7; margin-bottom: 8px; }
     .guide-panel li strong { color: rgba(255,255,255,0.88); font-weight: 600; }
-    .guide-img { display: block; max-width: 100%; height: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin: 0 0 20px; cursor: zoom-in; transition: border-color 0.15s; }
-    .guide-img:hover { border-color: rgba(255,255,255,0.18); }
-    .guide-info-box { margin: 20px 0; padding: 16px 18px; border-radius: 12px; background: rgba(124,58,237,0.07); border: 1px solid rgba(124,58,237,0.15); font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+    .guide-img-frame { margin: 20px 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.03) inset; background: rgba(0,0,0,0.4); cursor: zoom-in; }
+    .guide-img-frame img { width: 100%; display: block; }
+    .guide-img-caption { padding: 10px 14px; font-size: 12px; color: var(--color-muted); background: rgba(0,0,0,0.35); border-top: 1px solid rgba(255,255,255,0.05); }
+    .guide-callout { margin: 20px 0; padding: 16px 18px; border-radius: 12px; background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.18); font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+    .guide-callout.warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.2); color: rgba(255,255,255,0.7); }
+    .guide-downloads { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
     .guide-dl-btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--color-white); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); text-decoration: none; transition: 0.2s; font-family: inherit; cursor: pointer; }
     .guide-dl-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); transform: translateY(-1px); }
-    .guide-dl-btn svg { width: 16px; height: 16px; }
+    .guide-dl-btn.primary { background: var(--color-white); color: #000; border-color: transparent; }
+    .guide-dl-btn.primary:hover { background: #e8e8e8; transform: translateY(-1px); }
+    .guide-dl-btn svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.8; }
+    .guide-dl-btn.primary svg { opacity: 1; }
+    .guide-subsection { margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .guide-subsection h5 { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 10px; }
+    .guide-feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 14px; }
+    .guide-feature-chip { padding: 12px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); font-size: 13px; color: rgba(255,255,255,0.65); }
+    .guide-feature-chip strong { display: block; color: var(--color-white); font-size: 12px; margin-bottom: 4px; }
 
     @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes guide-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -368,7 +379,7 @@ function showGuide(key) {
 
     const pct = Math.round((1 / steps.length) * 100);
     const tabsHtml = steps.map((s, i) => {
-        const icon = s.icon ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.icon}</svg>` : '';
+        const icon = s.icon ? `<svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.icon}</svg>` : '';
         return `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i},'${key}')">${icon}${s.tab || 'Step ' + (i+1)}</button>`;
     }).join('');
 
@@ -431,9 +442,9 @@ function renderGuideStep(step, idx, total) {
         html += '<ul>' + step.items.map(item => `<li>${item}</li>`).join('') + '</ul>';
     }
     const imgs = step.images?.length ? step.images : (step.image ? [step.image] : []);
-    imgs.forEach(src => { html += `<img class="guide-img" src="${src}" alt="" loading="lazy" onclick="window.open(this.src,'_blank')">`; });
-    if (step.info) html += `<div class="guide-info-box">${step.info}</div>`;
-    if (step.link) html += `<a href="${step.link.url || '#'}" target="_blank" class="guide-dl-btn">${DL_SVG} ${step.link.text || 'Download'}</a>`;
+    imgs.forEach(src => { html += `<div class="guide-img-frame" onclick="window.open('${src}','_blank')"><img src="${src}" alt="" loading="lazy"></div>`; });
+    if (step.info) html += `<div class="guide-callout">${step.info}</div>`;
+    if (step.link) html += `<div class="guide-downloads"><a href="${step.link.url || '#'}" target="_blank" class="guide-dl-btn primary">${DL_SVG} ${step.link.text || 'Download'}</a></div>`;
     html += '</div>';
     return html;
 }
