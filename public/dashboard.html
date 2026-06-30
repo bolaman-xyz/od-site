@@ -2,492 +2,232 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Products | OD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>My Products | OD Services</title>
     <link rel="icon" type="image/png" href="/pfp.png">
-
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a0a0f;
-            color: #a0a0b0;
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            background-image:
-                radial-gradient(ellipse 600px 400px at 15% 10%, rgba(100,40,200,0.06) 0%, transparent 70%),
-                radial-gradient(ellipse 500px 350px at 85% 80%, rgba(120,50,220,0.05) 0%, transparent 70%),
-                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(90,30,180,0.03) 0%, transparent 70%),
-                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px),
-                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px);
-        }
+    :root {
+        --font-sans: 'Inter', system-ui, sans-serif;
+        --font-display: 'Syne', system-ui, sans-serif;
+        --color-bg: #030303;
+        --color-muted: #737373;
+        --color-white: #fff;
+        --accent: #7c3aed;
+    }
 
-        /* Sidebar */
-        .sidebar {
-            width: 250px; flex-shrink: 0;
-            background: rgba(8,8,14,0.95);
-            border-right: 1px solid rgba(255,255,255,0.04);
-            display: flex; flex-direction: column;
-            padding: 28px 0 16px;
-            position: fixed; top: 0; left: 0; bottom: 0;
-            z-index: 10;
-        }
-        .sidebar-logo {
-            display: flex; align-items: center; gap: 14px;
-            padding: 0 24px; margin-bottom: 40px;
-        }
-        .logo-icon {
-            width: 40px; height: 40px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .logo-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .logo-name { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { text-size-adjust: 100%; line-height: 1.5; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+    body { background-color: var(--color-bg); min-height: 100dvh; color: var(--color-white); overflow: hidden; display: flex; flex-direction: column; }
+    button { font: inherit; cursor: pointer; background: transparent; border: none; color: inherit; }
+    button:focus, input:focus { outline: none; }
 
-        .sidebar-section {
-            font-size: 11px; font-weight: 600; color: #444460;
-            text-transform: uppercase; letter-spacing: 1.2px;
-            padding: 0 24px; margin-bottom: 10px; margin-top: 28px;
-        }
-        .sidebar-section:first-of-type { margin-top: 0; }
-        .sidebar-link {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 16px;
-            margin: 3px 14px;
-            border-radius: 10px;
-            font-size: 14px; font-weight: 500; color: #666680;
-            text-decoration: none;
-            transition: all 0.15s;
-        }
-        .sidebar-link:hover { color: #b0b0c8; background: rgba(255,255,255,0.03); }
-        .sidebar-link.active {
-            color: #fff; font-weight: 600;
-            background: rgba(255,255,255,0.07);
-        }
-        .sidebar-link svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.7; }
-        .sidebar-link.active svg { opacity: 1; }
+    /* Background */
+    .bg-container { position: fixed; inset: 0; overflow: hidden; background-color: #030303; z-index: 0; pointer-events: none; }
+    .bg-grid { position: absolute; inset: 0; background-image: radial-gradient(90% 70% at 50% -10%, rgba(100,40,200,0.13), rgba(0,0,0,0) 55%), radial-gradient(55% 50% at 100% 85%, rgba(100,40,200,0.08), rgba(0,0,0,0) 50%), radial-gradient(45% 40% at 0px 60%, rgba(120,50,220,0.06), rgba(0,0,0,0) 48%), repeating-linear-gradient(-14deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 72px, rgba(255,255,255,0.04) 72px, rgba(255,255,255,0.04) 73px), repeating-linear-gradient(76deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 72px, rgba(255,255,255,0.022) 72px, rgba(255,255,255,0.022) 73px); }
+    .bg-noise { position: absolute; inset: 0; opacity: 0.55; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E"); }
 
-        .sidebar-bottom {
-            margin-top: auto;
-            padding: 18px 24px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .user-avatar {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(255,255,255,0.08);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 600; color: #888;
-            overflow: hidden;
-        }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .user-info { flex: 1; min-width: 0; }
-        .user-name { font-size: 13px; font-weight: 600; color: #e0e0ee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .user-sub { font-size: 10px; color: #555568; margin-top: 2px; }
-        .logout-btn {
-            background: none; border: none; cursor: pointer;
-            color: #444460; transition: color 0.15s; padding: 4px;
-        }
-        .logout-btn:hover { color: #aaa; }
-        .logout-btn svg { width: 16px; height: 16px; }
+    /* Layout */
+    #app { position: relative; z-index: 10; width: 100%; height: 100vh; display: flex; flex-direction: row; }
 
-        /* Main */
-        .main {
-            flex: 1; margin-left: 250px;
-        }
-        .main-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 24px 32px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .main-header h1 {
-            font-size: 20px; font-weight: 700; color: #fff;
-        }
-        .email-btn {
-            display: flex; align-items: center; gap: 8px;
-            padding: 9px 18px;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px; color: #b0b0c8;
-            font-size: 12px; font-weight: 600; cursor: pointer;
-            font-family: inherit; transition: all 0.15s;
-        }
-        .email-btn:hover { border-color: rgba(255,255,255,0.2); color: #e0e0ee; }
-        .email-btn svg { width: 14px; height: 14px; }
+    /* Sidebar */
+    .sidebar { width: 260px; background-color: rgba(8,8,12,0.6); backdrop-filter: blur(12px); border-right: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; padding: 24px; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+    .brand-logo { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
+    .brand-name { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
 
-        .main-content {
-            padding: 28px 32px;
-        }
+    .nav-category { font-size: 11px; color: #44445a; font-weight: 600; letter-spacing: 1px; margin: 24px 0 8px; text-transform: uppercase; }
+    .nav-item { padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--color-muted); margin-bottom: 4px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; text-decoration: none; width: 100%; text-align: left; }
+    .nav-item:hover { color: var(--color-white); background: rgba(255,255,255,0.04); }
+    .nav-item.active { background: rgba(255,255,255,0.07); color: var(--color-white); }
+    .nav-item svg { width: 17px; height: 17px; min-width: 17px; opacity: 0.5; flex-shrink: 0; transition: opacity 0.2s; }
+    .nav-item:hover svg, .nav-item.active svg { opacity: 1; }
 
-        /* Empty state */
-        .empty-state {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 100px 20px;
-            text-align: center;
-        }
-        .empty-icon {
-            width: 52px; height: 52px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px;
-            color: #444458;
-        }
-        .empty-icon svg { width: 24px; height: 24px; }
-        .empty-state h2 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
-        .empty-state p { font-size: 13px; color: #555568; margin-bottom: 22px; max-width: 300px; }
-        .empty-btn {
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 22px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px; color: #b0b0c8;
-            font-size: 13px; font-weight: 600; cursor: pointer;
-            font-family: inherit; transition: all 0.15s;
-        }
-        .empty-btn:hover { border-color: rgba(255,255,255,0.15); color: #e0e0ee; }
-        .empty-btn svg { width: 16px; height: 16px; }
+    #docsSection { display: none; }
 
-        /* Product cards */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 14px;
-        }
-        .product-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px;
-            padding: 20px;
-            transition: border-color 0.2s;
-        }
-        .product-card:hover { border-color: rgba(255,255,255,0.1); }
-        .product-top {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            margin-bottom: 14px;
-        }
-        .product-icon {
-            width: 40px; height: 40px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; overflow: hidden;
-        }
-        .product-icon img { width: 100%; height: 100%; object-fit: cover; }
-        .product-status {
-            display: flex; align-items: center; gap: 5px;
-            font-size: 10.5px; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .product-status .dot { width: 6px; height: 6px; border-radius: 50%; }
-        .ps-green { color: #34d399; }
-        .ps-green .dot { background: #34d399; box-shadow: 0 0 6px rgba(52,211,153,0.4); }
-        .ps-yellow { color: #fbbf24; }
-        .ps-yellow .dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+    .profile-card { margin-top: auto; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; }
+    .profile-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; overflow: hidden; flex-shrink: 0; }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-info { flex: 1; overflow: hidden; }
+    .profile-name { font-size: 13px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+    .profile-sub { font-size: 11px; color: var(--color-muted); }
+    .logout-btn { color: var(--color-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; padding: 6px; border-radius: 6px; }
+    .logout-btn:hover { color: #ef4444; }
+    .logout-btn svg { width: 16px; height: 16px; }
 
-        .product-name { font-size: 14px; font-weight: 600; color: #eeeef4; margin-bottom: 3px; }
-        .product-desc { font-size: 12px; color: #444458; margin-bottom: 14px; line-height: 1.5; }
+    /* Main area */
+    .main-area { flex: 1; display: flex; flex-direction: column; padding: 48px; overflow-y: auto; min-width: 0; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-shrink: 0; }
+    .topbar-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+    .content-area { flex: 1; display: flex; align-items: center; justify-content: center; }
+    .content-area.top { align-items: flex-start; justify-content: flex-start; }
 
-        .product-meta {
-            display: flex; gap: 14px; margin-bottom: 16px;
-        }
-        .pm { font-size: 11px; color: #3e3f55; display: flex; align-items: center; gap: 4px; }
-        .pm svg { width: 12px; height: 12px; }
+    /* Centered card (email prompt / empty) */
+    .center-card { width: 100%; max-width: 460px; background-color: rgba(10,10,12,0.7); backdrop-filter: blur(12px); border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); padding: 48px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .card-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; opacity: 0.3; }
+    .card-icon svg { width: 28px; height: 28px; }
+    .center-card h3 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .center-card p { color: var(--color-muted); font-size: 14px; margin-bottom: 28px; line-height: 1.5; max-width: 340px; }
+    .email-row { display: flex; gap: 8px; width: 100%; }
+    .email-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--color-white); padding: 12px 14px; border-radius: 8px; font-family: inherit; font-size: 14px; transition: 0.2s; }
+    .email-input:focus { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); }
+    .btn-lookup { background: rgba(124,58,237,0.15); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.2s; white-space: nowrap; flex-shrink: 0; }
+    .btn-lookup:hover { background: rgba(124,58,237,0.28); color: #c4b5fd; }
+    .btn-lookup svg { width: 15px; height: 15px; }
 
-        .product-bottom {
-            padding-top: 14px;
-            border-top: 1px solid rgba(255,255,255,0.04);
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .product-tags { display: flex; gap: 5px; flex-wrap: wrap; }
-        .ptag {
-            padding: 3px 8px; border-radius: 5px;
-            font-size: 10px; font-weight: 600;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
-            color: #777790;
-        }
-        .dl-btn {
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 18px;
-            background: #7c3aed; color: #fff;
-            border: none; border-radius: 7px;
-            font-size: 12px; font-weight: 600; cursor: pointer;
-            font-family: inherit; text-decoration: none;
-            transition: background 0.15s, transform 0.1s;
-        }
-        .dl-btn:hover { background: #6d28d9; transform: translateY(-1px); }
-        .dl-btn svg { width: 14px; height: 14px; }
+    /* Loading */
+    .loading-state { color: var(--color-muted); font-size: 14px; }
 
-        /* Email modal */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 100; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal {
-            width: 100%; max-width: 420px;
-            background: #111118;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px; padding: 28px;
-        }
-        .modal h2 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-        .modal p { font-size: 12.5px; color: #555568; margin-bottom: 18px; }
-        .modal input {
-            width: 100%; padding: 11px 14px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px; color: #d0d0de; font-size: 13px;
-            font-family: inherit; outline: none;
-            margin-bottom: 14px;
-        }
-        .modal input:focus { border-color: rgba(255,255,255,0.15); }
-        .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
-        .modal-btn {
-            padding: 9px 18px; border-radius: 8px;
-            font-size: 12px; font-weight: 600; cursor: pointer;
-            font-family: inherit; border: none; transition: all 0.15s;
-        }
-        .btn-cancel { background: rgba(255,255,255,0.04); color: #555568; }
-        .btn-cancel:hover { color: #8888a0; }
-        .btn-go { background: #7c3aed; color: #fff; }
-        .btn-go:hover { background: #6d28d9; }
+    /* Product grid */
+    .product-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .product-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 22px; transition: border-color 0.2s; }
+    .product-card:hover { border-color: rgba(255,255,255,0.12); }
+    .product-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .product-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+    .product-icon svg { width: 20px; height: 20px; opacity: 0.4; }
+    .product-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .product-status { display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .product-status .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .ps-green { color: #34d399; } .ps-green .dot { background: #34d399; box-shadow: 0 0 6px rgba(52,211,153,0.4); }
+    .ps-yellow { color: #fbbf24; } .ps-yellow .dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+    .product-name { font-size: 14px; font-weight: 600; color: #eeeef4; margin-bottom: 4px; }
+    .product-desc { font-size: 12px; color: #555568; margin-bottom: 14px; line-height: 1.5; }
+    .product-meta { display: flex; gap: 14px; margin-bottom: 16px; }
+    .pm { font-size: 11px; color: #3e3f55; display: flex; align-items: center; gap: 4px; }
+    .pm svg { width: 12px; height: 12px; }
+    .product-bottom { padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .product-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .ptag { padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: #777790; }
+    .dl-btn { display: flex; align-items: center; gap: 6px; padding: 9px 18px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; text-decoration: none; transition: background 0.15s, transform 0.1s; flex-shrink: 0; }
+    .dl-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+    .dl-btn svg { width: 14px; height: 14px; }
 
-        .loading-spinner {
-            display: flex; align-items: center; justify-content: center;
-            padding: 60px; color: #444458; font-size: 13px;
-        }
+    /* Guide */
+    .guide-container { width: 100%; max-width: 920px; background: linear-gradient(145deg, rgba(10,10,14,0.94) 0%, rgba(6,6,8,0.9) 100%); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 32px 64px -24px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04); display: flex; flex-direction: column; max-height: calc(100vh - 160px); overflow: hidden; animation: fade-up 0.5s ease-out; }
+    .guide-header { padding: 28px 32px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
+    .guide-header h3 { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 6px; }
+    .guide-header p { color: var(--color-muted); font-size: 13px; line-height: 1.5; }
+    .guide-tabs-wrap { flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2); }
+    .guide-tabs-row { display: flex; align-items: center; padding: 0 8px; }
+    .guide-tab-arrow { flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: var(--color-muted); background: transparent; cursor: pointer; transition: 0.2s; opacity: 0; pointer-events: none; }
+    .guide-tab-arrow.visible { opacity: 1; pointer-events: auto; }
+    .guide-tab-arrow:hover { background: rgba(255,255,255,0.06); color: var(--color-white); }
+    .guide-tab-arrow svg { width: 14px; height: 14px; }
+    .guide-tabs { display: flex; gap: 4px; overflow-x: auto; padding: 12px 4px 8px; flex: 1; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent; }
+    .guide-tabs::-webkit-scrollbar { height: 3px; }
+    .guide-tabs::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+    .guide-tab { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 10px; font-size: 13px; font-weight: 500; color: var(--color-muted); background: transparent; border: 1px solid transparent; cursor: pointer; transition: 0.25s; white-space: nowrap; font-family: inherit; }
+    .guide-tab:hover { color: var(--color-white); background: rgba(255,255,255,0.04); }
+    .guide-tab.active { color: var(--color-white); background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
+    .guide-tab svg { width: 14px; height: 14px; opacity: 0.6; transition: opacity 0.2s; }
+    .guide-tab:hover svg, .guide-tab.active svg { opacity: 1; }
+    .guide-progress { height: 2px; background: rgba(255,255,255,0.04); flex-shrink: 0; }
+    .guide-progress-bar { height: 100%; background: rgba(124,58,237,0.7); transition: width 0.3s; }
+    .guide-body { flex: 1; overflow-y: auto; padding: 28px 32px 32px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent; }
+    .guide-body::-webkit-scrollbar { width: 6px; }
+    .guide-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+    .guide-panel { display: none; animation: guide-fade 0.3s ease; }
+    .guide-panel.active { display: block; }
+    .step-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: rgba(255,255,255,0.35); margin-bottom: 12px; }
+    .step-badge span { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; }
+    .guide-panel h4 { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.3px; }
+    .guide-panel p { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
+    .guide-panel ul, .guide-panel ol { margin: 12px 0 16px 20px; }
+    .guide-panel li { color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.7; margin-bottom: 8px; }
+    .guide-panel li strong { color: rgba(255,255,255,0.88); font-weight: 600; }
+    .guide-img { display: block; max-width: 100%; height: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); margin: 0 0 20px; cursor: zoom-in; transition: border-color 0.15s; }
+    .guide-img:hover { border-color: rgba(255,255,255,0.18); }
+    .guide-info-box { margin: 20px 0; padding: 16px 18px; border-radius: 12px; background: rgba(124,58,237,0.07); border: 1px solid rgba(124,58,237,0.15); font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.6; }
+    .guide-dl-btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--color-white); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); text-decoration: none; transition: 0.2s; font-family: inherit; cursor: pointer; }
+    .guide-dl-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.18); transform: translateY(-1px); }
+    .guide-dl-btn svg { width: 16px; height: 16px; }
 
-        /* Email prompt (shown after Discord login) */
-        .email-prompt {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; padding: 80px 20px;
-            text-align: center;
-        }
-        .email-prompt-icon {
-            width: 52px; height: 52px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px;
-            color: #444458;
-        }
-        .email-prompt-icon svg { width: 24px; height: 24px; }
-        .email-prompt h2 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 6px; }
-        .email-prompt p { font-size: 13px; color: #555568; margin-bottom: 22px; max-width: 340px; }
-        .email-prompt-form {
-            display: flex; gap: 8px; width: 100%; max-width: 400px;
-        }
-        .email-prompt-form input {
-            flex: 1; padding: 11px 14px;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px; color: #d0d0de; font-size: 13px;
-            font-family: inherit; outline: none;
-        }
-        .email-prompt-form input:focus { border-color: rgba(255,255,255,0.15); }
-        .email-prompt-form button {
-            padding: 11px 22px;
-            background: #7c3aed; color: #fff;
-            border: none; border-radius: 8px;
-            font-size: 13px; font-weight: 600; cursor: pointer;
-            font-family: inherit; transition: background 0.15s;
-            white-space: nowrap;
-        }
-        .email-prompt-form button:hover { background: #6d28d9; }
+    @keyframes fade-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes guide-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Guide view */
-        .guide-view {
-            max-width: 900px;
-            background: #0c0c11;
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 16px;
-            padding: 36px 40px;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;
-        }
-        .guide-header { margin-bottom: 28px; }
-        .guide-header h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-        .guide-header p { font-size: 14px; color: #555568; line-height: 1.5; margin: 0; }
-
-        .guide-tabs-wrapper { position: relative; margin-bottom: 8px; }
-        .guide-tabs {
-            display: flex; gap: 2px;
-            overflow-x: auto; padding-bottom: 0;
-            scrollbar-width: none;
-        }
-        .guide-tabs::-webkit-scrollbar { display: none; }
-        .guide-tab {
-            padding: 10px 18px; border-radius: 10px;
-            font-size: 13px; font-weight: 500; color: #555568;
-            background: transparent; border: none;
-            cursor: pointer; font-family: inherit; transition: all 0.15s;
-            white-space: nowrap; display: flex; align-items: center; gap: 8px;
-        }
-        .guide-tab:hover { color: #b0b0c8; background: rgba(255,255,255,0.03); }
-        .guide-tab.active {
-            color: #fff; font-weight: 600;
-            background: rgba(255,255,255,0.06);
-        }
-        .guide-tab svg { width: 15px; height: 15px; opacity: 0.6; }
-        .guide-tab.active svg { opacity: 1; }
-
-        .guide-progress {
-            height: 3px; background: rgba(255,255,255,0.04);
-            border-radius: 2px; margin: 16px 0 28px;
-            overflow: hidden;
-        }
-        .guide-progress-bar {
-            height: 100%; background: #fff;
-            border-radius: 2px; transition: width 0.3s;
-        }
-
-        .guide-step-label {
-            display: inline-flex; align-items: center; gap: 8px;
-            margin-bottom: 14px;
-        }
-        .guide-step-label .step-num {
-            font-size: 11px; font-weight: 700; color: #888898;
-            background: rgba(255,255,255,0.05);
-            padding: 4px 10px; border-radius: 5px;
-            letter-spacing: 0.5px;
-        }
-        .guide-step-label .step-of {
-            font-size: 11px; font-weight: 600; color: #444460;
-            letter-spacing: 0.5px;
-        }
-
-        .guide-view h2 {
-            font-size: 22px; font-weight: 700; color: #fff;
-            margin-bottom: 12px;
-        }
-        .guide-view .guide-desc {
-            font-size: 14px; color: #777788; line-height: 1.7;
-            margin-bottom: 24px;
-        }
-        .guide-view ul {
-            list-style: none; padding: 0; margin-bottom: 28px;
-        }
-        .guide-view ul li {
-            padding: 10px 0 10px 24px; position: relative;
-            font-size: 14.5px; color: #777788; line-height: 1.6;
-        }
-        .guide-view ul li::before {
-            content: ''; position: absolute; left: 4px; top: 18px;
-            width: 7px; height: 7px; border-radius: 50%;
-            background: #444460;
-        }
-        .guide-view ul li strong { color: #e0e0ee; font-weight: 600; }
-
-        .guide-img {
-            display: block; max-width: 100%; height: auto;
-            border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
-            margin: 0 0 24px; cursor: zoom-in;
-            transition: border-color 0.15s;
-        }
-        .guide-img:hover { border-color: rgba(255,255,255,0.18); }
-
-        .guide-info-box {
-            padding: 16px 20px; border-radius: 12px;
-            background: rgba(139,92,246,0.05);
-            border: 1px solid rgba(139,92,246,0.1);
-            font-size: 13.5px; color: #8b8baa; margin-bottom: 24px;
-            line-height: 1.5;
-        }
-        .guide-dl-btn {
-            display: inline-flex; align-items: center; gap: 10px;
-            padding: 12px 24px;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px; color: #d0d0de;
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            font-family: inherit; text-decoration: none;
-            transition: all 0.15s;
-        }
-        .guide-dl-btn:hover { border-color: rgba(255,255,255,0.15); color: #fff; background: rgba(255,255,255,0.06); }
-        .guide-dl-btn svg { width: 16px; height: 16px; }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 64px; padding: 16px 0; }
-            .sidebar-logo { padding: 0; justify-content: center; }
-            .logo-name, .sidebar-section, .sidebar-link span, .user-info, .sidebar-divider { display: none; }
-            .sidebar-link { justify-content: center; padding: 10px; margin: 2px 8px; }
-            .sidebar-bottom { padding: 10px; margin: 0 4px; justify-content: center; }
-            .main { margin-left: 64px; }
-            .main-header { padding: 20px; }
-            .main-content { padding: 20px; }
-            .product-grid { grid-template-columns: 1fr; }
-        }
+    @media (max-width: 768px) {
+        body { overflow-y: auto; }
+        #app { height: auto; min-height: 100dvh; flex-direction: column; }
+        .sidebar { width: 100%; flex-direction: row; align-items: center; padding: 14px 16px; overflow-x: auto; gap: 8px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.04); flex-wrap: nowrap; }
+        .brand { margin-bottom: 0; flex-shrink: 0; }
+        .brand-name { display: none; }
+        .nav-category { display: none; }
+        #docsSection .nav-category { display: none; }
+        .nav-item { margin-bottom: 0; white-space: nowrap; flex-shrink: 0; padding: 8px 10px; }
+        .nav-item-label { display: none; }
+        .profile-card { margin-top: 0; flex-shrink: 0; padding: 8px 10px; margin-left: auto; }
+        .profile-info { display: none; }
+        .main-area { padding: 24px 16px; }
+        .topbar { margin-bottom: 24px; }
+        .topbar-title { font-size: 20px; }
+        .product-grid { grid-template-columns: 1fr; }
+        .guide-container { max-height: none; border-radius: 16px; }
+        .guide-header { padding: 22px 20px 16px; }
+        .guide-body { padding: 20px 20px 24px; }
+        .center-card { padding: 32px 24px; }
+        .email-row { flex-direction: column; }
+        .btn-lookup { justify-content: center; }
+    }
     </style>
 </head>
 <body>
-
-<!-- Sidebar -->
-<div class="sidebar">
-    <div class="sidebar-logo">
-        <div class="logo-icon"><img src="/pfp.png" alt="OD"></div>
-        <span class="logo-name">OD Services</span>
+    <div class="bg-container">
+        <div class="bg-grid"></div>
+        <div class="bg-noise"></div>
     </div>
 
-    <div class="sidebar-section">License</div>
-    <a href="#" class="sidebar-link active" onclick="showProductsView();return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
-        <span>My Products</span>
-    </a>
-    <a href="#" class="sidebar-link" onclick="changeEmail();return false;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
-        <span>Use a different email</span>
-    </a>
+    <div id="app">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="brand">
+                <img src="/pfp.png" alt="OD" class="brand-logo">
+                <span class="brand-name">OD Services</span>
+            </div>
 
-    <div id="docsSection" style="display:none">
-        <div class="sidebar-section">Documentation</div>
-        <div id="docsLinks"></div>
-    </div>
+            <div class="nav-category">License</div>
+            <button class="nav-item active" id="nav-products" onclick="showProductsView()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+                <span class="nav-item-label">My Products</span>
+            </button>
+            <button class="nav-item" id="nav-change-email" onclick="changeEmail()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                <span class="nav-item-label">Change Email</span>
+            </button>
 
-    <div class="sidebar-section">Community</div>
-    <a href="#" class="sidebar-link" id="discordLink">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
-        <span>Discord Server</span>
-    </a>
+            <div id="docsSection">
+                <div class="nav-category">Documentation</div>
+                <div id="docsLinks"></div>
+            </div>
 
-    <div class="sidebar-bottom" id="userSection">
-        <div class="user-avatar" id="userAvatar">?</div>
-        <div class="user-info">
-            <div class="user-name" id="userName">Guest</div>
-            <div class="user-sub" id="userSub">Not signed in</div>
+            <div class="nav-category">Community</div>
+            <a href="#" class="nav-item" id="discordLink">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+                <span class="nav-item-label">Discord Server</span>
+            </a>
+
+            <div class="profile-card">
+                <div class="profile-avatar" id="userAvatar">?</div>
+                <div class="profile-info">
+                    <div class="profile-name" id="userName">Guest</div>
+                    <div class="profile-sub" id="userSub">Not signed in</div>
+                </div>
+                <button onclick="signOut()" class="logout-btn" title="Sign out">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </div>
         </div>
-        <button class="logout-btn" onclick="signOut()" title="Sign out">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </button>
-    </div>
-</div>
 
-<!-- Main -->
-<div class="main">
-    <div class="main-header">
-        <h1>My Products</h1>
-    </div>
-
-    <div class="main-content" id="content">
-        <div class="loading-spinner">Loading your products...</div>
-    </div>
-</div>
-
-<!-- Email Modal -->
-<div class="modal-overlay" id="emailModal">
-    <div class="modal">
-        <h2>Find your products</h2>
-        <p>Enter the email you used when purchasing to find your downloads.</p>
-        <input type="email" id="lookupEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLookup()">
-        <div class="modal-btns">
-            <button class="modal-btn btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="modal-btn btn-go" onclick="doLookup()">Look up</button>
+        <!-- Main -->
+        <div class="main-area">
+            <div class="topbar">
+                <h2 class="topbar-title" id="topbar-title">My Products</h2>
+            </div>
+            <div class="content-area" id="content-area">
+                <div class="loading-state">Loading...</div>
+            </div>
         </div>
     </div>
-</div>
 
 <script>
 let token = '';
@@ -498,27 +238,41 @@ let guidesData = {};
 const DL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>';
 const KEY_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15.5 7.5 2.3-2.3a1 1 0 0 1 1.4 0l1.1 1.1a1 1 0 0 1 0 1.4L18 10"/><path d="m21 2-9.6 9.6"/><circle cx="7.5" cy="15.5" r="5.5"/></svg>';
 const BOX_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>';
-
 const MAIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 7 10-7"/></svg>';
+const GUIDE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>';
+
+function setContent(html, topAlign) {
+    const area = document.getElementById('content-area');
+    area.className = 'content-area' + (topAlign ? ' top' : '');
+    area.innerHTML = html;
+}
+
+function setActiveNav(id) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+}
 
 function showEmailPrompt() {
-    document.getElementById('content').innerHTML = `
-        <div class="email-prompt">
-            <div class="email-prompt-icon">${MAIL_SVG}</div>
-            <h2>Enter your email</h2>
+    document.getElementById('topbar-title').textContent = 'My Products';
+    setActiveNav('nav-products');
+    setContent(`
+        <div class="center-card">
+            <div class="card-icon">${MAIL_SVG}</div>
+            <h3>Enter your email</h3>
             <p>Enter the email you used when purchasing to view your downloads.</p>
-            <div class="email-prompt-form">
-                <input type="email" id="promptEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')submitEmail()">
-                <button onclick="submitEmail()">Look up</button>
+            <div class="email-row">
+                <input type="email" id="promptEmail" class="email-input" placeholder="your@email.com" onkeydown="if(event.key==='Enter')submitEmail()">
+                <button class="btn-lookup" onclick="submitEmail()">${KEY_SVG} Look up</button>
             </div>
-        </div>`;
+        </div>`);
     setTimeout(() => { const el = document.getElementById('promptEmail'); if (el) el.focus(); }, 100);
 }
 
 async function submitEmail() {
-    const email = document.getElementById('promptEmail').value.trim();
+    const email = (document.getElementById('promptEmail')?.value || '').trim();
     if (!email) return;
-    document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up products...</div>';
+    setContent('<div class="loading-state">Looking up products...</div>');
     await loadGuides();
     try {
         const res = await fetch('/api/lookup', {
@@ -529,12 +283,9 @@ async function submitEmail() {
         const data = await res.json();
         renderProducts(data.products || []);
     } catch (e) {
-        document.getElementById('content').innerHTML = '<div class="loading-spinner">Lookup failed. Try again.</div>';
+        setContent('<div class="loading-state">Lookup failed. Please try again.</div>');
     }
 }
-
-const GUIDE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>';
-const PRODUCTS_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>';
 
 async function loadGuides() {
     try {
@@ -550,7 +301,6 @@ function showGuideLinks(products) {
 
     const guideKeys = Object.keys(guidesData);
     const matchedGuides = [];
-
     for (const p of products) {
         const pid = String(p._id || p.id);
         const pName = (p.name || '').toLowerCase();
@@ -563,76 +313,102 @@ function showGuideLinks(products) {
             const nameMatch = pName && (pName.includes(gName) || gName.includes(pName) || key.toLowerCase().includes(pName.replace(/\s+/g, '-')));
             if (idMatch || nameMatch) { found = { key, title: guide.title || key }; break; }
         }
-        if (!found) found = { key: '__product_' + pid, title: (p.name || 'Product') + ' Guide', productName: p.name };
+        if (!found) found = { key: '__product_' + pid, title: (p.name || 'Product') + ' Guide' };
         if (!matchedGuides.find(m => m.key === found.key)) matchedGuides.push(found);
     }
-
     if (matchedGuides.length === 0) { docsSection.style.display = 'none'; return; }
 
     docsSection.style.display = 'block';
     docsLinks.innerHTML = matchedGuides.map(g =>
-        `<a href="#" class="sidebar-link" onclick="showGuide('${g.key}');return false;">
+        `<button class="nav-item" id="nav-guide-${g.key.replace(/[^a-z0-9]/gi,'_')}" onclick="showGuide('${g.key}')">
             ${GUIDE_SVG}
-            <span>${g.title}</span>
-        </a>`
+            <span class="nav-item-label">${g.title}</span>
+        </button>`
     ).join('');
 }
 
-function setActiveLink(el) {
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    if (el) el.classList.add('active');
-}
-
 function showProductsView() {
-    setActiveLink(document.querySelector('.sidebar-link'));
-    document.querySelector('.main-header h1').textContent = 'My Products';
+    setActiveNav('nav-products');
+    document.getElementById('topbar-title').textContent = 'My Products';
     renderProducts(loadedProducts);
 }
 
 function showGuide(key) {
-    const clicked = [...document.querySelectorAll('.sidebar-link')].find(l => l.onclick?.toString().includes(key) || l.getAttribute('onclick')?.includes(key));
-    setActiveLink(clicked);
+    const safeId = 'nav-guide-' + key.replace(/[^a-z0-9]/gi,'_');
+    setActiveNav(safeId);
 
     const guide = guidesData[key];
-    const el = document.getElementById('content');
-
     if (!guide || key.startsWith('__product_')) {
-        const productName = key.startsWith('__product_') ? (loadedProducts.find(p => '__product_' + (p._id || p.id) === key)?.name || 'Product') : key;
-        document.querySelector('.main-header h1').textContent = productName + ' Guide';
-        el.innerHTML = `
-            <div class="guide-view">
+        const productName = key.startsWith('__product_')
+            ? (loadedProducts.find(p => '__product_' + (p._id || p.id) === key)?.name || 'Product')
+            : key;
+        document.getElementById('topbar-title').textContent = productName + ' Guide';
+        setContent(`
+            <div class="guide-container">
                 <div class="guide-header">
-                    <h1>${productName} Guide</h1>
+                    <h3>${productName} Guide</h3>
                     <p>No guide has been created for this product yet. Check back later or contact support.</p>
                 </div>
-            </div>`;
+            </div>`, true);
         return;
     }
 
     const title = guide.title || key;
     const subtitle = guide.subtitle || 'Complete setup — follow every step before your first launch.';
-    document.querySelector('.main-header h1').textContent = title;
+    document.getElementById('topbar-title').textContent = title;
     const steps = guide.steps || [];
 
     if (steps.length === 0) {
-        el.innerHTML = `<div class="guide-view"><div class="guide-header"><h1>${title}</h1><p>${guide.content || 'No guide content yet.'}</p></div></div>`;
+        setContent(`
+            <div class="guide-container">
+                <div class="guide-header"><h3>${title}</h3><p>${guide.content || 'No content yet.'}</p></div>
+            </div>`, true);
         return;
     }
 
-    const progressPct = Math.round((1 / steps.length) * 100);
-
-    let html = '<div class="guide-view">';
-    html += `<div class="guide-header"><h1>${title}</h1><p>${subtitle}</p></div>`;
-    html += '<div class="guide-tabs-wrapper"><div class="guide-tabs">';
-    steps.forEach((s, i) => {
+    const pct = Math.round((1 / steps.length) * 100);
+    const tabsHtml = steps.map((s, i) => {
         const icon = s.icon ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${s.icon}</svg>` : '';
-        html += `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i}, '${key}')">${icon} ${s.tab || ('Step ' + (i+1))}</button>`;
-    });
-    html += '</div></div>';
-    html += `<div class="guide-progress"><div class="guide-progress-bar" id="guideProgress" style="width:${progressPct}%"></div></div>`;
-    html += `<div id="guideStepContent">${renderGuideStep(steps[0], 0, steps.length)}</div>`;
-    html += '</div>';
-    el.innerHTML = html;
+        return `<button class="guide-tab ${i === 0 ? 'active' : ''}" onclick="switchGuideStep(${i},'${key}')">${icon}${s.tab || 'Step ' + (i+1)}</button>`;
+    }).join('');
+
+    setContent(`
+        <div class="guide-container">
+            <div class="guide-header"><h3>${title}</h3><p>${subtitle}</p></div>
+            <div class="guide-tabs-wrap">
+                <div class="guide-tabs-row">
+                    <button class="guide-tab-arrow" id="guide-tab-prev" onclick="scrollGuideTabs(-1)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <div class="guide-tabs" id="guide-tabs">${tabsHtml}</div>
+                    <button class="guide-tab-arrow" id="guide-tab-next" onclick="scrollGuideTabs(1)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="guide-progress"><div class="guide-progress-bar" id="guideProgress" style="width:${pct}%"></div></div>
+            <div class="guide-body" id="guide-body">${renderGuideStep(steps[0], 0, steps.length)}</div>
+        </div>`, true);
+    initTabArrows();
+}
+
+function scrollGuideTabs(dir) {
+    const el = document.getElementById('guide-tabs');
+    if (el) el.scrollBy({ left: dir * 180, behavior: 'smooth' });
+}
+
+function initTabArrows() {
+    const tabsEl = document.getElementById('guide-tabs');
+    const prev = document.getElementById('guide-tab-prev');
+    const next = document.getElementById('guide-tab-next');
+    function update() {
+        if (!tabsEl || !prev || !next) return;
+        prev.classList.toggle('visible', tabsEl.scrollLeft > 2);
+        next.classList.toggle('visible', tabsEl.scrollLeft + tabsEl.clientWidth < tabsEl.scrollWidth - 2);
+    }
+    if (tabsEl) tabsEl.addEventListener('scroll', update, { passive: true });
+    setTimeout(update, 50);
+    window.addEventListener('resize', update);
 }
 
 function switchGuideStep(idx, key) {
@@ -642,44 +418,44 @@ function switchGuideStep(idx, key) {
     document.querySelectorAll('.guide-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
     const bar = document.getElementById('guideProgress');
     if (bar) bar.style.width = Math.round(((idx + 1) / total) * 100) + '%';
-    document.getElementById('guideStepContent').innerHTML = renderGuideStep(guide.steps[idx], idx, total);
+    const body = document.getElementById('guide-body');
+    if (body) { body.innerHTML = renderGuideStep(guide.steps[idx], idx, total); body.scrollTop = 0; }
 }
 
 function renderGuideStep(step, idx, total) {
-    let html = `<div class="guide-step-label"><span class="step-num">STEP ${idx + 1}</span><span class="step-of">OF ${total}</span></div>`;
-    html += `<h2>${step.title || ''}</h2>`;
-    if (step.description) html += `<p class="guide-desc">${step.description}</p>`;
+    let html = '<div class="guide-panel active">';
+    html += `<div class="step-badge"><span>Step ${idx + 1}</span> of ${total}</div>`;
+    html += `<h4>${step.title || ''}</h4>`;
+    if (step.description) html += `<p>${step.description}</p>`;
     if (step.items && step.items.length) {
-        html += '<ul>';
-        step.items.forEach(item => { html += `<li>${item}</li>`; });
-        html += '</ul>';
+        html += '<ul>' + step.items.map(item => `<li>${item}</li>`).join('') + '</ul>';
     }
-    const imgs = step.images && step.images.length ? step.images : (step.image ? [step.image] : []);
+    const imgs = step.images?.length ? step.images : (step.image ? [step.image] : []);
     imgs.forEach(src => { html += `<img class="guide-img" src="${src}" alt="" loading="lazy" onclick="window.open(this.src,'_blank')">`; });
     if (step.info) html += `<div class="guide-info-box">${step.info}</div>`;
     if (step.link) html += `<a href="${step.link.url || '#'}" target="_blank" class="guide-dl-btn">${DL_SVG} ${step.link.text || 'Download'}</a>`;
+    html += '</div>';
     return html;
 }
 
 function renderProducts(products) {
     loadedProducts = products || [];
     showGuideLinks(loadedProducts);
-    const el = document.getElementById('content');
+    document.getElementById('topbar-title').textContent = 'My Products';
+    setActiveNav('nav-products');
+
     if (!products || products.length === 0) {
-        el.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">${BOX_SVG}</div>
-                <h2>No products yet</h2>
-                <p>Redeem a license key to gain access to the loader.</p>
-                <button class="empty-btn" onclick="openEmailModal()">
-                    ${KEY_SVG}
-                    Lookup by Email
-                </button>
-            </div>`;
+        setContent(`
+            <div class="center-card">
+                <div class="card-icon">${BOX_SVG}</div>
+                <h3>No products found</h3>
+                <p>We couldn't find any purchases for that email. Try a different email or contact support.</p>
+                <button class="btn-lookup" onclick="changeEmail()">${MAIL_SVG} Use different email</button>
+            </div>`);
         return;
     }
 
-    el.innerHTML = '<div class="product-grid">' + products.map(p => {
+    setContent('<div class="product-grid">' + products.map(p => {
         const name = p.name || 'Untitled';
         const desc = p.description ? p.description.replace(/<[^>]*>/g, '').substring(0, 100) : '';
         const img = p.image_url || p.cloudflare_image_id || '';
@@ -690,11 +466,7 @@ function renderProducts(products) {
         const variants = p.variants || [];
         const badgeText = p.badge_text || '';
         const purchased = p.purchased_at ? new Date(p.purchased_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '';
-
-        let imgHtml = img
-            ? `<div class="product-icon"><img src="${img}" alt=""></div>`
-            : `<div class="product-icon">${BOX_SVG}</div>`;
-
+        const imgHtml = img ? `<div class="product-icon"><img src="${img}" alt=""></div>` : `<div class="product-icon">${BOX_SVG}</div>`;
         let btnHtml;
         if (st.includes('updat')) {
             btnHtml = `<button class="dl-btn" style="background:rgba(255,255,255,0.04);color:#444458;cursor:default;">Updating...</button>`;
@@ -703,28 +475,18 @@ function renderProducts(products) {
         } else {
             btnHtml = `<button class="dl-btn">${DL_SVG} Download</button>`;
         }
-
         let tagsHtml = '';
         if (badgeText) tagsHtml += `<span class="ptag">${badgeText}</span>`;
         variants.forEach(v => { if (v.name) tagsHtml += `<span class="ptag">${v.name}</span>`; });
-
         return `
             <div class="product-card">
-                <div class="product-top">
-                    ${imgHtml}
-                    <div class="product-status ${statusClass}"><span class="dot"></span>${statusText}</div>
-                </div>
+                <div class="product-top">${imgHtml}<div class="product-status ${statusClass}"><span class="dot"></span>${statusText}</div></div>
                 <div class="product-name">${name}</div>
                 <div class="product-desc">${desc}</div>
-                <div class="product-meta">
-                    ${purchased ? `<span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${purchased}</span>` : ''}
-                </div>
-                <div class="product-bottom">
-                    <div class="product-tags">${tagsHtml}</div>
-                    ${btnHtml}
-                </div>
+                <div class="product-meta">${purchased ? `<span class="pm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>${purchased}</span>` : ''}</div>
+                <div class="product-bottom"><div class="product-tags">${tagsHtml}</div>${btnHtml}</div>
             </div>`;
-    }).join('') + '</div>';
+    }).join('') + '</div>', true);
 }
 
 function updateUser(data) {
@@ -738,41 +500,6 @@ function updateUser(data) {
     }
 }
 
-async function loadProducts() {
-    try {
-        const res = await fetch('/api/my-products', {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-        if (res.status === 401) { signOut(); return; }
-        const data = await res.json();
-        renderProducts(data.products || []);
-    } catch (e) {
-        document.getElementById('content').innerHTML = '<div class="loading-spinner">Failed to load products.</div>';
-    }
-}
-
-async function doLookup() {
-    const email = document.getElementById('lookupEmail').value.trim();
-    if (!email) return;
-    closeModal();
-    document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up products...</div>';
-
-    try {
-        const res = await fetch('/api/lookup', {
-            method: 'POST',
-            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-        });
-        const data = await res.json();
-        renderProducts(data.products || []);
-    } catch (e) {
-        document.getElementById('content').innerHTML = '<div class="loading-spinner">Lookup failed. Try again.</div>';
-    }
-}
-
-function openEmailModal() { document.getElementById('emailModal').classList.add('show'); document.getElementById('lookupEmail').focus(); }
-function closeModal() { document.getElementById('emailModal').classList.remove('show'); }
-
 function signOut() {
     localStorage.removeItem('od_token');
     window.location.href = '/';
@@ -780,21 +507,15 @@ function signOut() {
 
 async function changeEmail() {
     if (!confirm('Remove your current email and look up a different one?')) return;
-    try {
-        await fetch('/api/clear-email', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
-    } catch (e) {}
+    try { await fetch('/api/clear-email', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } }); } catch(e) {}
     loadedProducts = [];
     showGuideLinks([]);
-    setActiveLink(document.querySelector('.sidebar-link'));
-    document.querySelector('.main-header h1').textContent = 'My Products';
-    document.getElementById('userSub').textContent = 'Email lookup';
     showEmailPrompt();
 }
 
 (async () => {
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
-
     await loadGuides();
 
     if (params.has('token')) {
@@ -807,16 +528,14 @@ async function changeEmail() {
         token = 'email_' + btoa(email);
         localStorage.setItem('od_token', token);
         updateUser({ email, global_name: email.split('@')[0] });
-        document.getElementById('content').innerHTML = '<div class="loading-spinner">Looking up your products...</div>';
+        setContent('<div class="loading-state">Looking up your products...</div>');
         try {
             const res = await fetch('/api/lookup', {
                 method: 'POST',
                 headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             });
-            if (res.status === 401) {
-                renderProducts([]);
-            } else {
+            if (res.status === 401) { renderProducts([]); } else {
                 const data = await res.json();
                 renderProducts(data.products || []);
             }
@@ -834,19 +553,17 @@ async function changeEmail() {
             const data = await res.json();
             updateUser(data);
             if (data.saved_email) {
-                // Auto-load products with saved email
+                setContent('<div class="loading-state">Loading your products...</div>');
                 try {
-                    const lookupRes = await fetch('/api/lookup', {
+                    const lr = await fetch('/api/lookup', {
                         method: 'POST',
                         headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: data.saved_email })
                     });
-                    if (lookupRes.ok) {
-                        const lookupData = await lookupRes.json();
-                        renderProducts(lookupData.products || []);
-                    } else {
-                        showEmailPrompt();
-                    }
+                    if (lr.ok) {
+                        const ld = await lr.json();
+                        renderProducts(ld.products || []);
+                    } else { showEmailPrompt(); }
                 } catch(e) { showEmailPrompt(); }
             } else {
                 showEmailPrompt();
@@ -855,9 +572,7 @@ async function changeEmail() {
             localStorage.removeItem('od_token');
             window.location.href = '/';
         }
-    } catch(e) {
-        showEmailPrompt();
-    }
+    } catch(e) { showEmailPrompt(); }
 })();
 </script>
 </body>
