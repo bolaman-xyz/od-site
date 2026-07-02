@@ -6,106 +6,77 @@
     <title>Sign In | OD</title>
     <link rel="icon" type="image/png" href="/pfp.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --accent: #8b5cf6;
-            --accent-2: #6d28d9;
-            --accent-glow: rgba(139,92,246,0.5);
-            --font-display: 'Space Grotesk', 'Inter', sans-serif;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        ::selection { background: rgba(139,92,246,0.35); color: #fff; }
         body {
-            background: #06060a;
+            background: #0a0a0f;
             color: #a0a0b0;
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex; align-items: center; justify-content: center;
             overflow: hidden;
-            -webkit-font-smoothing: antialiased;
         }
-        .aurora {
-            position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #06060a;
-        }
-        .aurora::before, .aurora::after {
-            content: ''; position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.55;
-        }
-        .aurora::before {
-            width: 700px; height: 700px; top: -200px; left: -100px;
-            background: radial-gradient(circle, rgba(124,58,237,0.4), transparent 65%);
-            animation: drift1 22s ease-in-out infinite;
-        }
-        .aurora::after {
-            width: 600px; height: 600px; bottom: -200px; right: -100px;
-            background: radial-gradient(circle, rgba(88,60,220,0.32), transparent 65%);
-            animation: drift2 26s ease-in-out infinite;
-        }
-        @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(100px,70px)} }
-        @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-90px,-50px)} }
-        .grid-overlay {
-            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+        .bg {
+            position: fixed; inset: 0;
             background-image:
-                repeating-linear-gradient(0deg, transparent, transparent 54px, rgba(255,255,255,0.02) 54px, rgba(255,255,255,0.02) 55px),
-                repeating-linear-gradient(90deg, transparent, transparent 54px, rgba(255,255,255,0.02) 54px, rgba(255,255,255,0.02) 55px);
-            mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, #000 30%, transparent 100%);
+                radial-gradient(ellipse 600px 400px at 20% 15%, rgba(100,40,200,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 350px at 80% 75%, rgba(120,50,220,0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 50% 40%, rgba(90,30,180,0.04) 0%, transparent 70%),
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255,255,255,0.035) 49px, rgba(255,255,255,0.035) 50px);
+            z-index: 0;
         }
 
         .card {
             position: relative; z-index: 1;
             width: 100%; max-width: 420px;
-            background: linear-gradient(160deg, rgba(16,16,24,0.85), rgba(10,10,16,0.8));
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 20px;
-            padding: 52px 42px;
+            background: rgba(12, 12, 18, 0.92);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 48px 40px;
             text-align: center;
-            backdrop-filter: blur(24px);
-            box-shadow: 0 30px 70px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
-            animation: rise 0.6s cubic-bezier(0.4,0,0.2,1);
+            backdrop-filter: blur(16px);
         }
-        @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .brand-logo {
-            width: 92px; height: 92px; object-fit: contain;
-            display: block; margin: 0 auto 20px;
-            filter: drop-shadow(0 8px 24px rgba(139,92,246,0.35));
+            width: 84px; height: 84px; object-fit: contain;
+            display: block; margin: 0 auto 16px;
         }
         .card h1 {
-            font-family: var(--font-display);
-            font-size: 24px; font-weight: 700; color: #fff;
-            margin-bottom: 8px; letter-spacing: -0.5px;
+            font-size: 22px; font-weight: 700; color: #fff;
+            margin-bottom: 8px;
         }
         .card p {
-            font-size: 14px; color: #6a6a82; margin-bottom: 34px;
+            font-size: 14px; color: #555568; margin-bottom: 32px;
             line-height: 1.5;
         }
         .discord-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; padding: 15px;
+            width: 100%; padding: 14px;
             background: #5865F2;
-            color: #fff; border: none; border-radius: 12px;
+            color: #fff; border: none; border-radius: 10px;
             font-size: 14px; font-weight: 600; cursor: pointer;
             font-family: inherit;
-            transition: all 0.2s;
+            transition: background 0.15s, transform 0.1s;
             text-decoration: none;
-            box-shadow: 0 8px 24px rgba(88,101,242,0.35);
         }
-        .discord-btn:hover { background: #4752c4; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(88,101,242,0.5); }
+        .discord-btn:hover { background: #4752c4; transform: translateY(-1px); }
         .discord-btn:active { transform: translateY(0); }
         .discord-btn svg { width: 22px; height: 22px; fill: #fff; }
 
         .footer-text {
-            margin-top: 26px; font-size: 11px; color: #3a3a4e;
+            margin-top: 24px; font-size: 11px; color: #333345;
         }
     </style>
 </head>
 <body>
-<div class="aurora"></div>
-<div class="grid-overlay"></div>
+<div class="bg"></div>
 
 <div class="card">
     <img src="/pfp.png" alt="OD Services" class="brand-logo">
-    <h1>Welcome back</h1>
-    <p>Sign in to access your license and download the loader.</p>
+    <h1>Sign in</h1>
+    <p>Access your license and download the loader.</p>
 
     <a href="/auth/discord" class="discord-btn">
         <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
